@@ -72,9 +72,10 @@
   color: var(--slate-900);
 }
 
-/* Headings are lowercased site-wide, which mangles acronyms ("ID" -> "id").
-   This opts a run of text back out. */
-.acronym {
+/* Headings are lowercased site-wide, which mangles anything that carries
+   meaning in its capitals — acronyms ("ID" -> "id"), the pronoun "I", proper
+   nouns. This opts a run of text back out. */
+.preserveCase {
   text-transform: none;
 }
 

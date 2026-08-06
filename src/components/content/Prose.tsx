@@ -14,8 +14,12 @@ export function Callout({ children }: { children: ReactNode }) {
 
 /**
  * Preserves capitalisation inside headings, which are lowercased site-wide.
- * Use for acronyms — without it "your ID" renders as "your id".
+ * Use for anything whose capitals carry meaning — acronyms ("ID", "AI"), the
+ * pronoun "I", proper nouns. Without it, "your ID" renders as "your id".
+ *
+ * Wrap the smallest span that needs it rather than a whole heading, so the
+ * lowercase house style still applies to the surrounding words.
  */
-export function Acronym({ children }: { children: ReactNode }) {
-  return <span className={styles.acronym}>{children}</span>;
+export function PreserveCase({ children }: { children: ReactNode }) {
+  return <span className={styles.preserveCase}>{children}</span>;
 }

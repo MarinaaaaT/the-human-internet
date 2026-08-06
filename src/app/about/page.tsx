@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { ContentPage } from '@/components/content/ContentPage';
 import { MaybeLink } from '@/components/content/MaybeLink';
-import { Acronym, Prose } from '@/components/content/Prose';
+import { PreserveCase, Prose } from '@/components/content/Prose';
 import { EXTERNAL_LINKS, ROUTES } from '@/content/site';
 
 export const metadata: Metadata = {
@@ -44,7 +44,7 @@ export default function AboutPage() {
         </p>
 
         <h2>
-          pro-human, not anti-<Acronym>AI</Acronym>
+          pro-human, not anti-<PreserveCase>AI</PreserveCase>
         </h2>
         <p>I&rsquo;m not against AI. I&rsquo;m against AI slop.</p>
         <p>
@@ -58,7 +58,10 @@ export default function AboutPage() {
           better output. That&rsquo;s what I&rsquo;m building for.
         </p>
 
-        <h2>who am I and why did I make the app?</h2>
+        <h2>
+          who am <PreserveCase>I</PreserveCase> and why did{' '}
+          <PreserveCase>I</PreserveCase> make the app?
+        </h2>
         {/* The intro video from the Notion source hasn't been recorded yet;
             set EXTERNAL_LINKS.introVideo to surface it here. */}
         <p>

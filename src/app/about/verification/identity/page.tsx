@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import { ContentPage } from '@/components/content/ContentPage';
-import { Acronym, Prose } from '@/components/content/Prose';
+import { PreserveCase, Prose } from '@/components/content/Prose';
 import { ROUTES } from '@/content/site';
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export default function IdentityPage() {
         </p>
 
         <h2>
-          option 1: your <Acronym>ID</Acronym> and a quick video
+          option 1: your <PreserveCase>ID</PreserveCase> and a quick video
         </h2>
         <ol>
           <li>You enter some basic personal info.</li>
@@ -48,7 +48,9 @@ export default function IdentityPage() {
           photo of somebody else&rsquo;s license.
         </p>
 
-        <h2>option 2: your phone number and Social</h2>
+        <h2>
+          option 2: your phone number and <PreserveCase>Social</PreserveCase>
+        </h2>
         <ol>
           <li>You enter your phone number and Social Security number.</li>
           <li>
