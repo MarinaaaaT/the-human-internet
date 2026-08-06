@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { ContentPage } from '@/components/content/ContentPage';
 import { MaybeLink } from '@/components/content/MaybeLink';
-import { Prose } from '@/components/content/Prose';
+import { Acronym, Prose } from '@/components/content/Prose';
 import { EXTERNAL_LINKS, ROUTES } from '@/content/site';
 
 export const metadata: Metadata = {
@@ -43,7 +43,9 @@ export default function AboutPage() {
           benefit corporation, like Kickstarter.
         </p>
 
-        <h2>pro-human, not anti-AI</h2>
+        <h2>
+          pro-human, not anti-<Acronym>AI</Acronym>
+        </h2>
         <p>I&rsquo;m not against AI. I&rsquo;m against AI slop.</p>
         <p>
           AI should be a tool that helps you express yourself better.

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import { ContentPage } from '@/components/content/ContentPage';
-import { Prose } from '@/components/content/Prose';
+import { Acronym, Prose } from '@/components/content/Prose';
 import { ROUTES } from '@/content/site';
 
 export const metadata: Metadata = {
@@ -31,7 +31,9 @@ export default function IdentityPage() {
           identity provider can confirm about you.
         </p>
 
-        <h2>option 1: your ID and a quick video</h2>
+        <h2>
+          option 1: your <Acronym>ID</Acronym> and a quick video
+        </h2>
         <ol>
           <li>You enter some basic personal info.</li>
           <li>You photograph your government-issued ID.</li>

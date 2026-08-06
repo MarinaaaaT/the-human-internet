@@ -72,6 +72,12 @@
   color: var(--slate-900);
 }
 
+/* Headings are lowercased site-wide, which mangles acronyms ("ID" -> "id").
+   This opts a run of text back out. */
+.acronym {
+  text-transform: none;
+}
+
 /* ------------------------------------------------------- disclosure/FAQ */
 
 .prose details {
