@@ -1,0 +1,106 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display-semibold);
+  letter-spacing: var(--tracking-tight);
+  text-transform: lowercase;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ------------------------------------------------------------------ sizes */
+
+.sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+}
+
+.md {
+  padding: var(--space-3) 22px;
+  font-size: var(--text-sm);
+}
+
+.lg {
+  padding: var(--space-4) 28px;
+  font-size: var(--text-md);
+}
+
+/* --------------------------------------------------------------- variants */
+
+/* Glass sits on imagery or the dark band, so it comes in a light and a dark
+   tone. Hover was a pair of JS mouse handlers in the original; it's a CSS
+   pseudo-class here, which also means it no-ops correctly on touch. */
+.glass {
+  backdrop-filter: blur(var(--blur-md));
+  box-shadow: var(--shadow-glass);
+}
+
+.glass[data-tone='light'] {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  color: #fff;
+}
+
+.glass[data-tone='light']:hover:not(:disabled) {
+  background: var(--glass-fill-strong);
+}
+
+.glass[data-tone='dark'] {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(20, 23, 26, 0.14);
+  color: var(--slate-900);
+}
+
+.glass[data-tone='dark']:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.solid {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+.solid:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.outline {
+  background: transparent;
+  border: 1px solid var(--fog-300);
+  color: var(--slate-900);
+}
+
+.outline:hover:not(:disabled) {
+  background: var(--fog-100);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--slate-700);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--fog-200);
+}
+
+/* ------------------------------------------------------------------- icon */
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  width: 16px;
+  height: 16px;
+}

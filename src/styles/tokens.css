@@ -1,0 +1,140 @@
+/**
+ * Design tokens — the single source of truth for colour, type, spacing and
+ * motion. Nothing in the app should hard-code a hex value or a pixel scale;
+ * reach for a token instead so a change here propagates everywhere.
+ *
+ * --font-display / --font-body are wired to the next/font families loaded in
+ * src/app/layout.tsx.
+ */
+
+:root {
+  /* ---------------------------------------------------------------- palette */
+  --fog-50: #fbfcfc;
+  --fog-100: #f2f4f5;
+  --fog-200: #e4e8ea;
+  --fog-300: #d0d7da;
+  --fog-400: #aab5ba;
+
+  --slate-500: #7c8a90;
+  --slate-600: #5c6a70;
+  --slate-700: #414d52;
+  --slate-800: #282f33;
+  --slate-900: #14171a;
+  --ink: #0c0e10;
+
+  --cyan-100: #e4eef0;
+  --cyan-200: #c4dade;
+  --cyan-300: #9cbfc6;
+  --cyan-400: #79a5ad;
+  --cyan-500: #5a94a0;
+  --cyan-600: #457884;
+  --cyan-700: #345c66;
+
+  --violet-mist: #8f8fa3;
+
+  /* ------------------------------------------------------ semantic surfaces */
+  --bg-page: var(--fog-100);
+  --bg-surface: var(--fog-50);
+  --bg-sunken: var(--fog-200);
+  /* The dark band behind "how it works". */
+  --bg-inverse: #31353a;
+
+  --text-primary: var(--slate-900);
+  --text-secondary: var(--slate-600);
+  --text-tertiary: var(--slate-500);
+  --text-on-dark: var(--fog-50);
+
+  --surface-card: rgba(255, 255, 255, 0.55);
+  --surface-card-border: rgba(255, 255, 255, 0.65);
+
+  --glass-fill: rgba(255, 255, 255, 0.14);
+  --glass-fill-strong: rgba(255, 255, 255, 0.28);
+  --glass-border: rgba(255, 255, 255, 0.38);
+  --glass-highlight: rgba(255, 255, 255, 0.55);
+
+  --accent: var(--cyan-500);
+  --accent-strong: var(--cyan-600);
+  --accent-soft: var(--cyan-200);
+
+  --verified: var(--cyan-500);
+  --danger: #b5544a;
+
+  --overlay-dark: rgba(12, 14, 16, 0.55);
+
+  /* ------------------------------------------------------------- typography */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.375rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.25rem;
+  --text-3xl: 3rem;
+  --text-4xl: 4rem;
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+
+  --weight-thin: 100;
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-bold: 700;
+  --weight-black: 900;
+
+  --weight-display-medium: 500;
+  --weight-display-semibold: 600;
+  --weight-display-bold: 700;
+  --weight-display-extrabold: 800;
+
+  /* ------------------------------------------------------ spacing & shaping */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  --container-max: 1120px;
+
+  /* ------------------------------------------------------ elevation & blur */
+  --shadow-sm: 0 1px 2px rgba(20, 23, 26, 0.06);
+  --shadow-md:
+    0 4px 16px rgba(20, 23, 26, 0.08), 0 1px 2px rgba(20, 23, 26, 0.06);
+  --shadow-lg: 0 12px 40px rgba(20, 23, 26, 0.14);
+  --shadow-glass: 0 8px 32px rgba(40, 60, 66, 0.16);
+
+  --blur-sm: 8px;
+  --blur-md: 18px;
+  --blur-lg: 32px;
+
+  /* ------------------------------------------------------------- motion */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 120ms;
+  --duration-normal: 220ms;
+  --duration-slow: 400ms;
+
+  /* --------------------------------------------------------- breakpoints */
+  /* Custom properties can't be used in media queries, so the mobile
+     breakpoint is duplicated as a literal 760px in component stylesheets.
+     Recorded here so the value has one documented home. */
+  --breakpoint-mobile: 760px;
+}

@@ -1,0 +1,212 @@
+.section {
+  background-color: var(--bg-inverse);
+  color: var(--text-on-dark);
+}
+
+.inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 88px var(--space-10) var(--space-24);
+}
+
+/* Three-up grid shared by the phone row, the tabs and the panels so the
+   columns stay aligned. Collapses to one column on mobile. */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* ------------------------------------------------------------- phone row */
+
+.phones {
+  gap: var(--space-6);
+  align-items: end;
+  justify-items: center;
+  margin-bottom: var(--space-20);
+}
+
+.phoneButton {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.phoneImage {
+  height: 420px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 34px 64px rgba(0, 0, 0, 0.5));
+  opacity: 0.42;
+  transition: opacity 320ms var(--ease-out);
+}
+
+.phoneButton[data-active='true'] .phoneImage {
+  opacity: 1;
+}
+
+/* ----------------------------------------------------------------- label */
+
+.kicker {
+  margin-bottom: var(--space-10);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: lowercase;
+  color: var(--slate-500);
+}
+
+/* ------------------------------------------------------------------ tabs */
+
+.tabs {
+  gap: var(--space-10);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tab {
+  padding: var(--space-5) 0 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font-family: var(--font-display);
+  text-align: left;
+  cursor: pointer;
+}
+
+.tabRule {
+  height: 2px;
+  margin-bottom: 18px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 260ms var(--ease-out);
+}
+
+.tab[data-active='true'] .tabRule {
+  opacity: 1;
+}
+
+.tabOrdinal {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--slate-500);
+}
+
+.tabTitle {
+  display: block;
+  font-size: var(--text-md);
+  font-weight: var(--weight-display-semibold);
+  letter-spacing: var(--tracking-tight);
+  text-transform: lowercase;
+  opacity: 0.45;
+  transition: opacity 260ms var(--ease-out);
+}
+
+.tab[data-active='true'] .tabTitle {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------- panels */
+
+.panels {
+  gap: var(--space-10);
+  margin-top: 28px;
+  align-items: start;
+}
+
+/* The cell holds its grid column on desktop even when inactive, so the three
+   columns stay aligned; only the active cell's content is rendered visible. */
+.panelBody {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.panel[data-active='true'] .panelBody {
+  display: flex;
+}
+
+.panelText {
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--fog-300);
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------- mobile step navigation */
+
+.mobileNav {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .inner {
+    padding: 56px var(--space-6) 120px;
+  }
+
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .phones {
+    margin-bottom: var(--space-12);
+  }
+
+  .phoneImage {
+    height: 360px;
+  }
+
+  /* One step at a time on mobile. */
+  .phoneButton:not([data-active='true']),
+  .tab:not([data-active='true']),
+  .panel:not([data-active='true']) {
+    display: none;
+  }
+
+  .mobileNav {
+    position: fixed;
+    right: 0;
+    bottom: var(--space-5);
+    left: 0;
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+    /* The bar itself is a pass-through; only the controls take pointer input. */
+    pointer-events: none;
+  }
+
+  .navButton {
+    pointer-events: auto;
+    width: 52px;
+    height: 52px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-glass);
+    color: var(--fog-50);
+    font-size: var(--text-md);
+    cursor: pointer;
+  }
+
+  .navCounter {
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(12px);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    color: var(--fog-50);
+  }
+}
