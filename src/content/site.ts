@@ -12,8 +12,21 @@ export const ROUTES = {
   home: '/',
   about: '/about',
   verification: '/about/verification',
-  identity: '/about/verification/identity',
-  humanity: '/about/verification/humanity',
+} as const;
+
+/**
+ * The two halves of verification live as sections on the verification page
+ * rather than as their own routes, so they're linked by anchor. The ids are
+ * declared here so the links and the headings can't drift apart.
+ */
+export const VERIFICATION_SECTIONS = {
+  identity: 'identity',
+  humanity: 'humanity',
+} as const;
+
+export const SECTION_LINKS = {
+  identity: `${ROUTES.verification}#${VERIFICATION_SECTIONS.identity}`,
+  humanity: `${ROUTES.verification}#${VERIFICATION_SECTIONS.humanity}`,
 } as const;
 
 export const NAV_LINKS: { label: string; href: string }[] = [

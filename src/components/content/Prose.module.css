@@ -36,6 +36,13 @@
   margin-top: 0;
 }
 
+/* Linkable headings are jumped to from elsewhere on the site. Without this
+   they land underneath the fixed site header. */
+.prose h2[id],
+.prose h3[id] {
+  scroll-margin-top: var(--space-20);
+}
+
 .prose p {
   margin: 0 0 var(--space-5);
   max-width: 68ch;

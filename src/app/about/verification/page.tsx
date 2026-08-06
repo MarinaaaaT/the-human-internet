@@ -2,8 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { ContentPage } from '@/components/content/ContentPage';
-import { Callout, Prose } from '@/components/content/Prose';
-import { ROUTES } from '@/content/site';
+import { Callout, PreserveCase, Prose } from '@/components/content/Prose';
+import {
+  CONTENT_AUTHENTICITY_URL,
+  ROUTES,
+  SECTION_LINKS,
+  VERIFICATION_SECTIONS,
+} from '@/content/site';
 
 export const metadata: Metadata = {
   title: 'verification',
@@ -31,14 +36,14 @@ export default function VerificationPage() {
         <ul>
           <li>
             <strong>
-              <Link href={ROUTES.identity}>Are you a real person?</Link>
+              <Link href={SECTION_LINKS.identity}>Are you a real person?</Link>
             </strong>{' '}
             We confirm you&rsquo;re a unique human, not a bot farm running fifty
             accounts.
           </li>
           <li>
             <strong>
-              <Link href={ROUTES.humanity}>
+              <Link href={SECTION_LINKS.humanity}>
                 Did your camera really take this?
               </Link>
             </strong>{' '}
@@ -69,9 +74,87 @@ export default function VerificationPage() {
             We&rsquo;re not trying to be perfect. We&rsquo;re trying to force a
             real human into the loop, because we think that alone cuts the sheer
             volume of AI slop people are drowning in. We&rsquo;re pro-human, not
-            anti-AI.
+            anti-<PreserveCase>AI</PreserveCase>.
           </p>
         </Callout>
+
+        <h2 id={VERIFICATION_SECTIONS.identity}>
+          proving you&rsquo;re a real person
+        </h2>
+        <p>
+          This is a one-time thing. You do it when you register, and then you
+          never think about it again.
+        </p>
+        <p>
+          There are two ways through it. Which one you get depends on what our
+          identity provider can confirm about you.
+        </p>
+
+        <h3>
+          option 1: your <PreserveCase>ID</PreserveCase> and a quick video
+        </h3>
+        <ol>
+          <li>You enter some basic personal info.</li>
+          <li>You photograph your government-issued ID.</li>
+          <li>
+            You do a liveness check — a short video where you follow a few
+            on-screen prompts, like turning your head or blinking.
+          </li>
+        </ol>
+        <p>
+          The video step is what makes the ID meaningful. It confirms a live
+          person is actually holding that ID, rather than someone holding up a
+          photo of somebody else&rsquo;s license.
+        </p>
+
+        <h3>
+          option 2: your phone number and <PreserveCase>Social</PreserveCase>
+        </h3>
+        <ol>
+          <li>You enter your phone number and Social Security number.</li>
+          <li>
+            Our identity provider checks your number against your mobile
+            carrier&rsquo;s records — confirming the device is genuinely yours,
+            and that the line isn&rsquo;t brand new or recently ported.
+          </li>
+          <li>
+            It cross-checks that against the identity information you submitted.
+          </li>
+        </ol>
+        <p>No ID photo, no video. This one takes seconds.</p>
+        <p>
+          Either path is answering the same question: is there one real person
+          behind this account?
+        </p>
+
+        <h2 id={VERIFICATION_SECTIONS.humanity}>
+          proving a human took the photo
+        </h2>
+        <ol>
+          <li>You snap a photo in our app.</li>
+          <li>
+            Your phone&rsquo;s camera quietly signs the photo as it&rsquo;s
+            taken — think of it as an invisible watermark baked in at the moment
+            of capture.
+          </li>
+          <li>That signature travels with the photo.</li>
+          <li>
+            We check the signature, and generate your shareable proof link.
+          </li>
+        </ol>
+        <p>
+          This is possible because the camera and the photo get
+          cryptographically bound together using content credentials, an open
+          standard called C2PA. If you want to go down the rabbit hole:{' '}
+          <a
+            href={CONTENT_AUTHENTICITY_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Content Authenticity Initiative
+          </a>
+          .
+        </p>
 
         <h2>your privacy</h2>
         <p>

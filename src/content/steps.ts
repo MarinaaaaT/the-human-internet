@@ -2,7 +2,7 @@ import stepIdentity from '@/../public/images/step-1-identity.png';
 import stepCapture from '@/../public/images/step-2-capture.png';
 import stepShare from '@/../public/images/step-3-share.png';
 
-import { ROUTES } from '@/content/site';
+import { SECTION_LINKS } from '@/content/site';
 
 import type { StaticImageData } from 'next/image';
 
@@ -32,7 +32,7 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
     title: 'verify your identity',
     body: 'Confirm that you’re a real person through a secure identity verification process.',
     cta: 'what do i need to do?',
-    ctaHref: ROUTES.identity,
+    ctaHref: SECTION_LINKS.identity,
     image: stepIdentity,
     imageAlt: 'identity verification screen',
   },
@@ -41,7 +41,7 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
     title: 'take human photos',
     body: 'Capture a photo in the app. Behind the scenes, we verify that it was taken by a real person using a real camera, then generate a link you can use as proof.',
     cta: 'what makes it human?',
-    ctaHref: ROUTES.humanity,
+    ctaHref: SECTION_LINKS.humanity,
     image: stepCapture,
     imageAlt: 'photo capture screen',
   },
