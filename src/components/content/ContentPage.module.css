@@ -1,0 +1,77 @@
+.page {
+  /* Clears the fixed site header, which is pinned on content pages. */
+  padding-top: 88px;
+  padding-bottom: var(--space-24);
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 var(--space-10);
+}
+
+.header {
+  margin-bottom: var(--space-12);
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: lowercase;
+  color: var(--text-tertiary);
+}
+
+.breadcrumbs a {
+  color: var(--text-tertiary);
+}
+
+.breadcrumbs a:hover {
+  color: var(--text-primary);
+}
+
+.separator {
+  color: var(--fog-400);
+}
+
+.current {
+  color: var(--text-secondary);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-display-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-transform: lowercase;
+  color: var(--text-primary);
+}
+
+.lede {
+  margin-top: var(--space-5);
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding-top: 80px;
+    padding-bottom: var(--space-16);
+  }
+
+  .container {
+    padding: 0 var(--space-6);
+  }
+
+  .title {
+    font-size: var(--text-xl);
+  }
+}

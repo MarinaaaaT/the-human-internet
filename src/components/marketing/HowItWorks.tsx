@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { KeyboardEvent } from 'react';
 
-import { Button } from '@/components/ui/Button';
+import { Button, ButtonLink } from '@/components/ui/Button';
 import { HOW_IT_WORKS_STEPS } from '@/content/steps';
 import { useSwipe } from '@/hooks/useSwipe';
 
@@ -132,9 +132,15 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
             >
               <div className={styles.panelBody}>
                 <p className={styles.panelText}>{step.body}</p>
-                <Button variant="glass" size="md">
-                  {step.cta}
-                </Button>
+                {step.ctaHref ? (
+                  <ButtonLink href={step.ctaHref} variant="glass" size="md">
+                    {step.cta}
+                  </ButtonLink>
+                ) : (
+                  <Button variant="glass" size="md">
+                    {step.cta}
+                  </Button>
+                )}
               </div>
             </div>
           ))}

@@ -4,6 +4,9 @@
   gap: var(--space-2);
   border: none;
   border-radius: var(--radius-pill);
+  /* ButtonLink renders an <a>, which would otherwise pick up the global
+     link colour and underline. */
+  text-decoration: none;
   font-family: var(--font-display);
   font-weight: var(--weight-display-semibold);
   letter-spacing: var(--tracking-tight);

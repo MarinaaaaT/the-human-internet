@@ -40,6 +40,10 @@
   color: var(--text-primary);
 }
 
+.wordmark:hover {
+  color: var(--text-primary);
+}
+
 .nav {
   display: flex;
   gap: 28px;

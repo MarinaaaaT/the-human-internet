@@ -1,6 +1,8 @@
 'use client';
 
-import { NAV_LINKS, SITE_NAME } from '@/content/site';
+import Link from 'next/link';
+
+import { NAV_LINKS, ROUTES, SITE_NAME } from '@/content/site';
 import { useScrolledPast } from '@/hooks/useScrolledPast';
 
 import styles from './SiteHeader.module.css';
@@ -8,8 +10,17 @@ import styles from './SiteHeader.module.css';
 /** Scroll distance past which the sticky bar fades in. */
 const REVEAL_AFTER_PX = 160;
 
-export function SiteHeader() {
-  const visible = useScrolledPast(REVEAL_AFTER_PX);
+export interface SiteHeaderProps {
+  /**
+   * The homepage hides the bar until the hero is scrolled past. Content pages
+   * have no hero to reveal it, so they pin it from the top instead.
+   */
+  alwaysVisible?: boolean;
+}
+
+export function SiteHeader({ alwaysVisible = false }: SiteHeaderProps) {
+  const scrolled = useScrolledPast(REVEAL_AFTER_PX);
+  const visible = alwaysVisible || scrolled;
 
   return (
     <header
@@ -21,12 +32,14 @@ export function SiteHeader() {
       inert={!visible}
     >
       <div className={styles.inner}>
-        <span className={styles.wordmark}>{SITE_NAME}</span>
+        <Link className={styles.wordmark} href={ROUTES.home}>
+          {SITE_NAME}
+        </Link>
         <nav className={styles.nav}>
           {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href}>
+            <Link key={link.href} href={link.href}>
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>
