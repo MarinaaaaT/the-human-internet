@@ -38,6 +38,9 @@
   --bg-sunken: var(--fog-200);
   /* The dark band behind "how it works". */
   --bg-inverse: #31353a;
+  /* Matches the flat grey at the top of the hero photograph (~#eeeeed), so
+     the image can meet the page with no visible seam. */
+  --bg-hero: #eeefef;
 
   --text-primary: var(--slate-900);
   --text-secondary: var(--slate-600);

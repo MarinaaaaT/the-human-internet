@@ -4,6 +4,10 @@
   flex-direction: column;
   min-height: 92vh;
   overflow: hidden;
+  /* On mobile the photo only covers the lower part of the hero. Painting the
+     whole section in the photo's own top-edge grey means the two meet
+     invisibly, instead of the image butting against the page background. */
+  background-color: var(--bg-hero);
 }
 
 /*
@@ -17,7 +21,7 @@
 .backdrop {
   position: absolute;
   inset: 0;
-  background-color: #eeefef;
+  background-color: var(--bg-hero);
 }
 
 .image {

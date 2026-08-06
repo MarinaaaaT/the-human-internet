@@ -3,7 +3,7 @@
  * one-line edit rather than a hunt through JSX.
  */
 
-export const SITE_NAME = 'the human network';
+export const SITE_NAME = 'the human internet';
 
 /** TODO: replace with the real App Store listing once the app ships. */
 export const APP_STORE_URL = '#download';

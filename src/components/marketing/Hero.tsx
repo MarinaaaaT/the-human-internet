@@ -23,7 +23,7 @@ export function Hero() {
 
       <div className={styles.inner}>
         <div className={styles.copy}>
-          <h1 className={styles.title}>join the human network</h1>
+          <h1 className={styles.title}>join the human internet</h1>
           <p className={styles.lede}>
             Keep the internet alive with proof that real people are behind the
             content they create. No bots. No AI. Just humans around the world

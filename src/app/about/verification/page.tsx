@@ -164,7 +164,7 @@ export default function VerificationPage() {
         <p>
           Your ID photo and liveness video go to our identity provider to run
           the check. They&rsquo;re never posted, never attached to your photos,
-          and never shown to anyone on the network.
+          and never shown to anyone on the human internet.
         </p>
         <p>
           We will never share your identity information without your permission.
@@ -224,7 +224,7 @@ export default function VerificationPage() {
           <p>
             Yes — if you abuse duplicate accounts, resell accounts, steal
             others&rsquo; content, or obviously photograph AI-generated content,
-            we&rsquo;ll remove you from the human network.
+            we&rsquo;ll remove you from the human internet.
           </p>
         </details>
       </Prose>

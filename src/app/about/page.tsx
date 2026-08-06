@@ -9,7 +9,7 @@ import { EXTERNAL_LINKS, ROUTES } from '@/content/site';
 export const metadata: Metadata = {
   title: 'about',
   description:
-    'The human network is a dedicated space for humans on the internet — tools to connect real people making real things.',
+    'The human internet is a dedicated space for humans online — tools to connect real people making real things.',
 };
 
 export default function AboutPage() {
@@ -20,9 +20,9 @@ export default function AboutPage() {
       breadcrumbs={[{ label: 'home', href: ROUTES.home }]}
     >
       <Prose>
-        <h2>what is the human network?</h2>
+        <h2>what is the human internet?</h2>
         <p>
-          The human network is a dedicated space for humans on the internet.
+          The human internet is a dedicated space for humans online.
           I&rsquo;m building tools to connect real people making real things,
           because creating and sharing with one another is the heart of the
           human experience and I think it&rsquo;s worth protecting. The goal is

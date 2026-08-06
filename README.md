@@ -1,4 +1,4 @@
-# the human network — website
+# the human internet — website
 
 Marketing site for The Human Internet. Built with **Next.js 16 (App Router)**,
 TypeScript, and CSS Modules. Deployed on Vercel.

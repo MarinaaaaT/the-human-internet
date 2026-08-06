@@ -27,15 +27,15 @@ const SITE_URL =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'the human network',
-    template: '%s · the human network',
+    default: 'the human internet',
+    template: '%s · the human internet',
   },
   description:
     'Keep the internet alive with proof that real people are behind the content they create. No bots. No AI. Just humans around the world making and sharing things they care about.',
   openGraph: {
     type: 'website',
-    siteName: 'the human network',
-    title: 'the human network',
+    siteName: 'the human internet',
+    title: 'the human internet',
     description:
       'Proof that real people are behind the content they create. No bots. No AI.',
   },
