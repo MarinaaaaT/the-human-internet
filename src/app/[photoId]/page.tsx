@@ -18,6 +18,10 @@ export const dynamic = 'force-dynamic';
 const UUID_SHAPE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Base58 (Bitcoin alphabet: no 0/O/I/l), matches `photos.short_code` and the
+// app's `VerifiedPhoto.generateShortCode()`.
+const SHORT_CODE_SHAPE = /^[123456789A-HJ-NP-Za-km-z]{8}$/;
+
 /** Signed URL lifetime, in seconds. Only needs to outlive the initial render. */
 const SIGNED_URL_TTL_SECONDS = 60;
 
@@ -31,11 +35,13 @@ interface VerificationPhoto {
 async function getVerificationPhoto(
   photoId: string,
 ): Promise<VerificationPhoto | null> {
-  if (!UUID_SHAPE.test(photoId)) return null;
+  if (!UUID_SHAPE.test(photoId) && !SHORT_CODE_SHAPE.test(photoId)) {
+    return null;
+  }
 
   const supabase = getSupabaseClient();
   const { data, error } = await supabase
-    .rpc('get_verification_photo', { p_photo_id: photoId })
+    .rpc('get_verification_photo', { p_lookup: photoId })
     .maybeSingle<VerificationPhoto>();
 
   if (error) {
