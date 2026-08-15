@@ -36,18 +36,18 @@ export default function VerificationPage() {
         <ul>
           <li>
             <strong>
-              <Link href={SECTION_LINKS.identity}>Are you a real person?</Link>
-            </strong>{' '}
-            We confirm you&rsquo;re a unique human, not a bot farm running fifty
-            accounts.
-          </li>
-          <li>
-            <strong>
               <Link href={SECTION_LINKS.humanity}>
                 Did your camera really take this?
               </Link>
             </strong>{' '}
             We confirm the photo came out of the physical camera on your phone.
+          </li>
+          <li>
+            <strong>
+              <Link href={SECTION_LINKS.identity}>Are you a real person?</Link>
+            </strong>{' '}
+            We confirm you&rsquo;re a unique human, not a bot farm running fifty
+            accounts. This one is optional.
           </li>
         </ul>
 
@@ -78,13 +78,50 @@ export default function VerificationPage() {
           </p>
         </Callout>
 
-        <h2 id={VERIFICATION_SECTIONS.identity}>
-          proving you&rsquo;re a real person
+        <h2 id={VERIFICATION_SECTIONS.humanity}>
+          proving a human took the photo
         </h2>
+        <ol>
+          <li>You snap a photo in our app.</li>
+          <li>
+            Your phone&rsquo;s camera quietly signs the photo as it&rsquo;s
+            taken — think of it as an invisible watermark baked in at the moment
+            of capture.
+          </li>
+          <li>That signature travels with the photo.</li>
+          <li>
+            We check the signature, and generate your shareable proof link.
+          </li>
+        </ol>
         <p>
-          This is a one-time thing. You do it when you register, and then you
-          never think about it again.
+          This is possible because the camera and the photo get
+          cryptographically bound together using content credentials, an open
+          standard called C2PA. If you want to go down the rabbit hole:{' '}
+          <a
+            href={CONTENT_AUTHENTICITY_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Content Authenticity Initiative
+          </a>
+          .
         </p>
+
+        <h2 id={VERIFICATION_SECTIONS.identity}>
+          proving you&rsquo;re a real person (optional)
+        </h2>
+        <Callout>
+          <p>
+            Identity verification is completely optional. You can capture and
+            share verified photos without it.
+          </p>
+          <p>
+            If you&rsquo;d ever like to use the human internet to make claims
+            about the ownership of your content, that&rsquo;s when you&rsquo;ll
+            need to verify your identity. You can do it when you register, or
+            any time afterwards from Settings.
+          </p>
+        </Callout>
         <p>
           There are two ways through it. Which one you get depends on what our
           identity provider can confirm about you.
@@ -125,35 +162,6 @@ export default function VerificationPage() {
         <p>
           Either path is answering the same question: is there one real person
           behind this account?
-        </p>
-
-        <h2 id={VERIFICATION_SECTIONS.humanity}>
-          proving a human took the photo
-        </h2>
-        <ol>
-          <li>You snap a photo in our app.</li>
-          <li>
-            Your phone&rsquo;s camera quietly signs the photo as it&rsquo;s
-            taken — think of it as an invisible watermark baked in at the moment
-            of capture.
-          </li>
-          <li>That signature travels with the photo.</li>
-          <li>
-            We check the signature, and generate your shareable proof link.
-          </li>
-        </ol>
-        <p>
-          This is possible because the camera and the photo get
-          cryptographically bound together using content credentials, an open
-          standard called C2PA. If you want to go down the rabbit hole:{' '}
-          <a
-            href={CONTENT_AUTHENTICITY_URL}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            Content Authenticity Initiative
-          </a>
-          .
         </p>
 
         <h2>your privacy</h2>

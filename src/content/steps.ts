@@ -29,7 +29,7 @@ export interface HowItWorksStep {
 export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
   {
     ordinal: '01',
-    title: 'verify your identity',
+    title: 'verify your identity (optional)',
     body: 'Confirm that you’re a real person through a secure identity verification process.',
     cta: 'what do i need to do?',
     ctaHref: SECTION_LINKS.identity,
