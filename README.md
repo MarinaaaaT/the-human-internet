@@ -1,9 +1,20 @@
 # the human internet — website
 
-Marketing site for The Human Internet. Built with **Next.js 16 (App Router)**,
-TypeScript, and CSS Modules. Deployed on Vercel.
+Marketing site **and the signed-out photo verification page** for The Human
+Internet. Built with **Next.js 16 (App Router)**, TypeScript, and CSS Modules.
+Deployed on Vercel.
 
-The iOS app lives in a separate repo.
+Two sibling repos share the same Supabase project (`xpjkgngifffzdaikjakw`): the
+iOS app (`the-human-internet-app`) and the server-side code — signing Lambda and
+Supabase Edge Functions — (`the-human-internet-backend`).
+
+> [!IMPORTANT]
+> **`/[photoId]` is a public API.** It's the destination of every verification
+> link the app has ever put on someone's clipboard. It resolves an 8-character
+> Base58 `photos.short_code` *or*, for links shared before short codes existed,
+> a bare `photos.id` UUID — both via the one `get_verification_photo(p_lookup
+> text)` RPC. Changing the route or either id format breaks links already shared
+> in the wild. The app pins its half in `VerifiedPhotoLinkTests`.
 
 ## Running locally
 
@@ -42,9 +53,25 @@ manual deploy step.
 >
 > After that it's hands-off.
 
-No environment variables are required to build or run the site today.
-`NEXT_PUBLIC_SITE_URL` is optional and only sets the canonical origin used for
-Open Graph metadata; it defaults to `https://the-human-internet.com`.
+## Environment variables
+
+| Variable                                | Required                | What it's for                                                                            |
+| --------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`              | For `/[photoId]`        | Supabase project the verification page reads                                              |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`  | For `/[photoId]`        | Publishable (anon) key — **not a secret**, see below                                       |
+| `NEXT_PUBLIC_SITE_URL`                  | No                      | Canonical origin for Open Graph metadata; defaults to `https://the-human-internet.com`     |
+
+The marketing pages build and run without any of these. The verification page
+throws at request time if the two Supabase vars are missing, so a local `.env.local`
+needs them before `/{code}` will render anything.
+
+The publishable key is deliberately not a secret. The security boundary for
+anonymous reads is server-side: `get_verification_photo()` is a `security definer`
+function that only ever answers about one photo you already hold the code for (so
+the key can't be used to enumerate photos), and it returns `storage_path`/`username`
+only when the owner's privacy is `Public`. Storage reads go through an `anon` RLS
+policy on the `photos` bucket. See the app repo's `CLAUDE.md` → Database for the
+full policy set and the two silent traps found while building it.
 
 ## Project structure
 
@@ -53,6 +80,8 @@ src/
   app/
     layout.tsx           Root layout — fonts, global CSS, default metadata
     page.tsx             Homepage; composes the marketing sections
+    about/               /about and /about/verification content pages
+    [photoId]/           Signed-out verification page (see the note up top)
   components/
     marketing/           Page sections (Hero, HowItWorks, SiteHeader, …)
     ui/                  Reusable design-system primitives (Button)
@@ -61,6 +90,8 @@ src/
     site.ts              Site-wide constants: nav links, App Store URL
     steps.ts             Copy + images for the "how it works" steps
   hooks/                 useScrolledPast, useSwipe
+  lib/
+    supabase/server.ts   Publishable-key client for Server Components
   styles/
     tokens.css           Design tokens (colour, type, spacing, motion)
     globals.css          Reset + base element styles
@@ -77,6 +108,10 @@ public/images/           Hero and phone-mockup artwork
   genuinely needs state, effects, or event handlers — currently just
   `SiteHeader` (scroll listener) and `HowItWorks` (step state, swipe).
 - **Responsive layout is CSS, not JavaScript.** Breakpoint is `760px`.
+- **`/[photoId]` is `force-dynamic`** and must stay that way. It mints a
+  short-lived signed Storage URL per request and its response depends on live DB
+  state (the owner can change their privacy at any time), so it can't be
+  statically generated or cached.
 - **Copy lives in `src/content/`**, so marketing wording can change without
   touching layout code.
 
