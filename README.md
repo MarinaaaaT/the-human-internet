@@ -83,7 +83,9 @@ src/
     about/               /about and /about/verification content pages
     [photoId]/           Signed-out verification page (see the note up top)
   components/
-    marketing/           Page sections (Hero, HowItWorks, SiteHeader, …)
+    marketing/           Page sections (Hero, HowItWorks, SiteHeader, AppStoreBadge)
+    content/             Long-form page furniture: ContentPage (title +
+                         breadcrumbs), Prose/Callout (typography), MaybeLink
     ui/                  Reusable design-system primitives (Button)
     icons/               Inline SVG icons
   content/
@@ -114,6 +116,10 @@ public/images/           Hero and phone-mockup artwork
   statically generated or cached.
 - **Copy lives in `src/content/`**, so marketing wording can change without
   touching layout code.
+- **Unset destinations render as text, not dead links.** `EXTERNAL_LINKS` in
+  `site.ts` holds `string | null`, and `MaybeLink` renders plain text for a
+  `null`. Filling in a URL there promotes it to a real link with no other
+  change — so add the entry rather than hard-coding a placeholder `#`.
 
 ## Where the placeholder links go
 
