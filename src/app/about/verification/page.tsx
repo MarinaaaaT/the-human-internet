@@ -122,46 +122,25 @@ export default function VerificationPage() {
             any time afterwards from Settings.
           </p>
         </Callout>
-        <p>
-          There are two ways through it. Which one you get depends on what our
-          identity provider can confirm about you.
-        </p>
-
-        <h3>
-          option 1: your <PreserveCase>ID</PreserveCase> and a quick video
-        </h3>
         <ol>
-          <li>You enter some basic personal info.</li>
+          <li>You enter your phone number.</li>
           <li>You photograph your government-issued ID.</li>
-          <li>
-            You do a liveness check — a short video where you follow a few
-            on-screen prompts, like turning your head or blinking.
-          </li>
+          <li>You take a selfie.</li>
         </ol>
         <p>
-          The video step is what makes the ID meaningful. It confirms a live
-          person is actually holding that ID, rather than someone holding up a
+          The selfie is what makes the <PreserveCase>ID</PreserveCase>
+          meaningful. Our identity provider matches your face against the photo
+          on the document, which confirms a live person is actually holding that{' '}
+          <PreserveCase>ID</PreserveCase> — rather than someone holding up a
           photo of somebody else&rsquo;s license.
         </p>
-
-        <h3>
-          option 2: your phone number and <PreserveCase>Social</PreserveCase>
-        </h3>
-        <ol>
-          <li>You enter your phone number and Social Security number.</li>
-          <li>
-            Our identity provider checks your number against your mobile
-            carrier&rsquo;s records — confirming the device is genuinely yours,
-            and that the line isn&rsquo;t brand new or recently ported.
-          </li>
-          <li>
-            It cross-checks that against the identity information you submitted.
-          </li>
-        </ol>
-        <p>No ID photo, no video. This one takes seconds.</p>
         <p>
-          Either path is answering the same question: is there one real person
-          behind this account?
+          That&rsquo;s the whole check. We never ask for a Social Security
+          number, and we never ask our identity provider to look one up.
+        </p>
+        <p>
+          It&rsquo;s all answering one question: is there one real person behind
+          this account?
         </p>
 
         <h2>your privacy</h2>
@@ -170,9 +149,10 @@ export default function VerificationPage() {
           unique human. That&rsquo;s it.
         </p>
         <p>
-          Your ID photo and liveness video go to our identity provider to run
-          the check. They&rsquo;re never posted, never attached to your photos,
-          and never shown to anyone on the human internet.
+          Your <PreserveCase>ID</PreserveCase> photo and selfie go to our
+          identity provider to run the check. They&rsquo;re never posted, never
+          attached to your photos, and never shown to anyone on the human
+          internet.
         </p>
         <p>
           We will never share your identity information without your permission.
