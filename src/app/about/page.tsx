@@ -38,9 +38,8 @@ export default function AboutPage() {
         <p>
           I&rsquo;ve tried to build the structure to match the promise. I will
           never sell the content you create here — everything you make is 100%
-          yours. This is a community project right now, not a for-profit
-          company, and as it gains traction I plan to register it as a public
-          benefit corporation, like Kickstarter.
+          yours. As it gains traction I plan to register it as a public benefit
+          corporation, like Kickstarter.
         </p>
 
         <h2>
