@@ -86,10 +86,9 @@ export default function AboutPage() {
         <ul>
           <li>
             <strong>
-              <Link href={`${ROUTES.home}#download`}>Use the app</Link>
+              <Link href={`${ROUTES.home}#download`}>Get the app</Link>
             </strong>{' '}
-            — Actually using it, and telling me where it falls short, is the
-            most useful thing you can do right now.
+            — Download it, share a photo, and leave me any feedback.
           </li>
           <li>
             <strong>
@@ -100,12 +99,11 @@ export default function AboutPage() {
             — I try to keep the roadmap and feature list up to date and public.
           </li>
           <li>
-            <strong>
-              <MaybeLink href={EXTERNAL_LINKS.discord}>
-                Talk to real humans
-              </MaybeLink>
-            </strong>{' '}
-            — Questions, comments, feedback? Want to build with me?
+            <strong>Talk to real humans</strong> — Questions, comments,
+            feedback? Want to build with me?{' '}
+            <MaybeLink href={EXTERNAL_LINKS.discord}>
+              Join our discord.
+            </MaybeLink>
           </li>
         </ul>
       </Prose>
