@@ -38,9 +38,8 @@ export default function AboutPage() {
         <p>
           I&rsquo;ve tried to build the structure to match the promise. I will
           never sell the content you create here — everything you make is 100%
-          yours. This is a community project right now, not a for-profit
-          company, and as it gains traction I plan to register it as a public
-          benefit corporation, like Kickstarter.
+          yours. As it gains traction I plan to register it as a public benefit
+          corporation, like Kickstarter.
         </p>
 
         <h2>
@@ -87,11 +86,9 @@ export default function AboutPage() {
         <ul>
           <li>
             <strong>
-              <MaybeLink href={EXTERNAL_LINKS.donate}>
-                Support the work
-              </MaybeLink>
+              <Link href={`${ROUTES.home}#download`}>Get the app</Link>
             </strong>{' '}
-            — Donations go straight into building this.
+            — Download it, share a photo, and leave me any feedback.
           </li>
           <li>
             <strong>
@@ -102,12 +99,11 @@ export default function AboutPage() {
             — I try to keep the roadmap and feature list up to date and public.
           </li>
           <li>
-            <strong>
-              <MaybeLink href={EXTERNAL_LINKS.discord}>
-                Talk to real humans
-              </MaybeLink>
-            </strong>{' '}
-            — Questions, comments, feedback? Want to build with me?
+            <strong>Talk to real humans</strong> — Questions, comments,
+            feedback? Want to build with me?{' '}
+            <MaybeLink href={EXTERNAL_LINKS.discord}>
+              Join our discord.
+            </MaybeLink>
           </li>
         </ul>
       </Prose>

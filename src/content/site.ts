@@ -44,9 +44,8 @@ export const HOW_IT_WORKS_ANCHOR = '#how';
  * broken URL — fill these in to turn them into real links automatically.
  */
 export const EXTERNAL_LINKS: Record<string, string | null> = {
-  donate: null,
   roadmap: null,
-  discord: null,
+  discord: 'https://discord.gg/SjYNad553',
   introVideo: null,
 };
 
