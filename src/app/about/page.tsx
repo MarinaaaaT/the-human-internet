@@ -87,11 +87,10 @@ export default function AboutPage() {
         <ul>
           <li>
             <strong>
-              <MaybeLink href={EXTERNAL_LINKS.donate}>
-                Support the work
-              </MaybeLink>
+              <Link href={`${ROUTES.home}#download`}>Use the app</Link>
             </strong>{' '}
-            — Donations go straight into building this.
+            — Actually using it, and telling me where it falls short, is the
+            most useful thing you can do right now.
           </li>
           <li>
             <strong>
