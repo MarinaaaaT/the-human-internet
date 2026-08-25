@@ -45,8 +45,7 @@ export const HOW_IT_WORKS_ANCHOR = '#how';
  */
 export const EXTERNAL_LINKS: Record<string, string | null> = {
   roadmap: null,
-  // TODO: needs the full invite — https://discord.gg/ has no code on the end.
-  discord: null,
+  discord: 'https://discord.gg/SjYNad553',
   introVideo: null,
 };
 
