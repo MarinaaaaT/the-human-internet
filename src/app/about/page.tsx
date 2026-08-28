@@ -91,19 +91,18 @@ export default function AboutPage() {
             — Download it, share a photo, and leave me any feedback.
           </li>
           <li>
-            <strong>
-              <MaybeLink href={EXTERNAL_LINKS.roadmap}>
-                See what&rsquo;s coming next
-              </MaybeLink>
-            </strong>{' '}
-            — I try to keep the roadmap and feature list up to date and public.
+            <strong>See what&rsquo;s coming next</strong> — I try to keep the
+            roadmap and feature list up to date and public. Check it out{' '}
+            <MaybeLink href={EXTERNAL_LINKS.roadmap}>here</MaybeLink>.
           </li>
           <li>
             <strong>Talk to real humans</strong> — Questions, comments,
-            feedback? Want to build with me?{' '}
+            feedback? Want to build with me? You can{' '}
             <MaybeLink href={EXTERNAL_LINKS.discord}>
-              Join our discord.
-            </MaybeLink>
+              Join our discord
+            </MaybeLink>{' '}
+            or leave anonymous product feedback{' '}
+            <MaybeLink href={EXTERNAL_LINKS.feedback}>here</MaybeLink>.
           </li>
         </ul>
       </Prose>

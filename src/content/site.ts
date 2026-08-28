@@ -44,8 +44,9 @@ export const HOW_IT_WORKS_ANCHOR = '#how';
  * broken URL — fill these in to turn them into real links automatically.
  */
 export const EXTERNAL_LINKS: Record<string, string | null> = {
-  roadmap: null,
+  roadmap: 'https://thehumaninternet.featurebase.app/roadmap',
   discord: 'https://discord.gg/SjYNad553',
+  feedback: 'https://thehumaninternet.featurebase.app/',
   introVideo: null,
 };
 
