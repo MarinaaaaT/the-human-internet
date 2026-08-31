@@ -7,49 +7,17 @@ import { CheckCircle } from '@/components/icons/CheckCircle';
 import { SiteHeader } from '@/components/marketing/SiteHeader';
 import { ButtonLink } from '@/components/ui/Button';
 import { APP_STORE_URL, ROUTES, SITE_NAME } from '@/content/site';
-import { getSupabaseClient } from '@/lib/supabase/server';
+import {
+  formatCapturedAt,
+  getVerificationPhoto,
+  signedPhotoUrlIfPublic,
+} from '@/lib/photos/verificationPhoto';
 
 import styles from './page.module.css';
 
 // Signed URLs are minted fresh per request — this route can't be statically
 // generated, since the response depends on live DB state per photo id.
 export const dynamic = 'force-dynamic';
-
-const UUID_SHAPE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-// Base58 (Bitcoin alphabet: no 0/O/I/l), matches `photos.short_code` and the
-// app's `VerifiedPhoto.generateShortCode()`.
-const SHORT_CODE_SHAPE = /^[123456789A-HJ-NP-Za-km-z]{8}$/;
-
-/** Signed URL lifetime, in seconds. Only needs to outlive the initial render. */
-const SIGNED_URL_TTL_SECONDS = 60;
-
-interface VerificationPhoto {
-  storage_path: string | null;
-  username: string | null;
-  captured_at: string;
-  is_public: boolean;
-}
-
-async function getVerificationPhoto(
-  photoId: string,
-): Promise<VerificationPhoto | null> {
-  if (!UUID_SHAPE.test(photoId) && !SHORT_CODE_SHAPE.test(photoId)) {
-    return null;
-  }
-
-  const supabase = getSupabaseClient();
-  const { data, error } = await supabase
-    .rpc('get_verification_photo', { p_lookup: photoId })
-    .maybeSingle<VerificationPhoto>();
-
-  if (error) {
-    console.error('get_verification_photo failed:', error.message);
-    return null;
-  }
-  return data;
-}
 
 interface PageProps {
   params: Promise<{ photoId: string }>;
@@ -62,16 +30,27 @@ export async function generateMetadata({
   const photo = await getVerificationPhoto(photoId);
 
   if (!photo) {
-    return { title: 'photo not found' };
+    return { title: 'photo not found', openGraph: { title: 'photo not found' } };
   }
 
   const title = photo.is_public
     ? `verified by @${photo.username}`
     : 'verified human photo';
+  const description = 'This photo was taken by a real human — verified.';
 
+  // `openGraph` has to restate the title and description rather than
+  // inheriting them from the fields above: the root layout declares its own
+  // `openGraph` block, and an explicit parent value wins over a child's
+  // plain `title`/`description`. Without this the card for someone's photo
+  // was captioned with the site's generic marketing copy.
+  //
+  // `openGraph.images` is deliberately *not* set — the sibling
+  // `opengraph-image` route supplies it by file convention, and a value
+  // here would override that. It applies its own privacy gate.
   return {
     title,
-    description: 'This photo was taken by a real human — verified.',
+    description,
+    openGraph: { title, description },
   };
 }
 
@@ -83,17 +62,7 @@ export default async function VerificationPage({ params }: PageProps) {
     notFound();
   }
 
-  let signedPhotoUrl: string | null = null;
-  if (photo.is_public && photo.storage_path) {
-    const supabase = getSupabaseClient();
-    const { data, error } = await supabase.storage
-      .from('photos')
-      .createSignedUrl(photo.storage_path, SIGNED_URL_TTL_SECONDS);
-    if (error) {
-      console.error('createSignedUrl failed:', error.message);
-    }
-    signedPhotoUrl = data?.signedUrl ?? null;
-  }
+  const signedPhotoUrl = await signedPhotoUrlIfPublic(photo);
 
   // A public photo whose sign call still failed (storage/object gone,
   // outage) falls through to the gate UI below rather than a broken image —
@@ -101,10 +70,7 @@ export default async function VerificationPage({ params }: PageProps) {
   // chose to hide this"), but it's the safer default and this should only
   // ever happen for a corrupted row.
 
-  const capturedDate = new Date(photo.captured_at).toLocaleDateString(
-    'en-US',
-    { month: 'long', day: 'numeric', year: 'numeric' },
-  );
+  const capturedDate = formatCapturedAt(photo.captured_at);
 
   return (
     <>

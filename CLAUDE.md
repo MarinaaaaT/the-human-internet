@@ -28,9 +28,17 @@ both through the one `get_verification_photo(p_lookup text)` RPC. Changing the
 route, either id format, or the RPC breaks links already shared in the wild.
 The app pins its half in `VerifiedPhotoLinkTests`.
 
-The route is `force-dynamic` and must stay that way: it mints a short-lived
-signed Storage URL per request, and its response depends on live DB state
-(the owner can change their privacy at any time).
+It also owns the **Open Graph card** every shared link unfurls into
+(`opengraph-image.tsx`), which is what a verification link looks like on
+Facebook, Messages, X, Reddit or Slack — so that file, not the app, is where
+the appearance of a share is changed.
+
+The route is `force-dynamic` and must stay that way — as is `opengraph-image`:
+both mint a short-lived signed Storage URL per request, and their response
+depends on live DB state (the owner can change their privacy at any time). Both
+gate on the shared `signedPhotoUrlIfPublic` in `src/lib/photos/` rather than
+reimplementing the check, because a card is cached by every platform it is
+pasted into and a `Humans Only` leak there is far harder to walk back.
 
 ## Anonymous access is narrower than it looks
 
