@@ -82,6 +82,8 @@ src/
     page.tsx             Homepage; composes the marketing sections
     about/               /about and /about/verification content pages
     [photoId]/           Signed-out verification page (see the note up top)
+      page.tsx           The page itself
+      opengraph-image.tsx  The card a shared link unfurls into
   components/
     marketing/           Page sections (Hero, HowItWorks, SiteHeader, AppStoreBadge)
     content/             Long-form page furniture: ContentPage (title +
@@ -93,6 +95,8 @@ src/
     steps.ts             Copy + images for the "how it works" steps
   hooks/                 useScrolledPast, useSwipe
   lib/
+    photos/              Verification-photo lookup + the Public-only privacy
+                         gate, shared by the page and its OG card
     supabase/server.ts   Publishable-key client for Server Components
   styles/
     tokens.css           Design tokens (colour, type, spacing, motion)
@@ -110,10 +114,22 @@ public/images/           Hero and phone-mockup artwork
   genuinely needs state, effects, or event handlers — currently just
   `SiteHeader` (scroll listener) and `HowItWorks` (step state, swipe).
 - **Responsive layout is CSS, not JavaScript.** Breakpoint is `760px`.
-- **`/[photoId]` is `force-dynamic`** and must stay that way. It mints a
-  short-lived signed Storage URL per request and its response depends on live DB
-  state (the owner can change their privacy at any time), so it can't be
-  statically generated or cached.
+- **`/[photoId]` is `force-dynamic`** and must stay that way, and so is its
+  `opengraph-image` sibling, for the same reason. Both mint a short-lived signed
+  Storage URL per request and their response depends on live DB state (the owner
+  can change their privacy at any time), so neither can be statically generated
+  or cached.
+- **The privacy gate is `signedPhotoUrlIfPublic`, in `src/lib/photos/`, and both
+  routes call it rather than reimplementing it.** An Open Graph card is fetched
+  and then cached by every platform a link is pasted into, so a `Humans Only`
+  photo leaking through that surface would be more public — and far harder to
+  walk back — than the same leak on the page.
+- **`generateMetadata` in `/[photoId]` restates its title and description under
+  `openGraph`.** The root layout declares its own `openGraph` block, and an
+  explicit parent value beats a child's plain `title`/`description`, so without
+  that restatement every photo's card was captioned with the site's generic
+  marketing copy. It must *not* set `openGraph.images` — the file-convention
+  `opengraph-image` route supplies that, and a value there would override it.
 - **Copy lives in `src/content/`**, so marketing wording can change without
   touching layout code.
 - **Unset destinations render as text, not dead links.** `EXTERNAL_LINKS` in
