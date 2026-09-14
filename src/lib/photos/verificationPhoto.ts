@@ -6,6 +6,13 @@ import { getSupabaseClient } from '@/lib/supabase/server';
  *
  * `/[photoId]` is a public API — it's the destination of every verification
  * link the app has ever put on someone's clipboard. See the repo README.
+ *
+ * The RPC also carries the verified owner's optional page customization —
+ * their real name and social handles. Every gate on those is server-side,
+ * inside `get_verification_photo()`: it withholds them unless the owner is
+ * `verified` (a column no client can write) *and* `Public` (the same gate
+ * the username already passes, and a real name is strictly more
+ * identifying than a username). Nothing here re-decides that.
  */
 
 /** Signed URL lifetime, in seconds. Only needs to outlive the initial render. */
@@ -23,6 +30,28 @@ export interface VerificationPhoto {
   username: string | null;
   captured_at: string;
   is_public: boolean;
+  /**
+   * The owner's `users.verification_status` is `verified` — the one claim
+   * on this page no client can write (see the app repo's `CLAUDE.md` →
+   * Database). The three customization fields below are user-authored and
+   * therefore claim nothing on their own; this is what makes them worth
+   * showing.
+   */
+  is_verified: boolean;
+  /**
+   * The owner's real name, already composed and gated server-side: the RPC
+   * returns it only when they are verified, Public, *and* asked for it to
+   * be shown. Null covers all of those cases at once, so there is nothing
+   * to re-decide here.
+   */
+  display_name: string | null;
+  /**
+   * Raw `users.social_links` JSON — deliberately `unknown`. Run it through
+   * `parseSocialLinks` (see `./socialLinks`) rather than reading it
+   * directly: it is user-authored text on a page strangers load, and that
+   * module is where the shape check and the href construction live.
+   */
+  social_links: unknown;
 }
 
 export async function getVerificationPhoto(

@@ -7,6 +7,7 @@ import { CheckCircle } from '@/components/icons/CheckCircle';
 import { SiteHeader } from '@/components/marketing/SiteHeader';
 import { ButtonLink } from '@/components/ui/Button';
 import { APP_STORE_URL, ROUTES, SITE_NAME } from '@/content/site';
+import { parseSocialLinks } from '@/lib/photos/socialLinks';
 import {
   formatCapturedAt,
   getVerificationPhoto,
@@ -72,6 +73,13 @@ export default async function VerificationPage({ params }: PageProps) {
 
   const capturedDate = formatCapturedAt(photo.captured_at);
 
+  // What the owner chose to put on this page beyond the photo. Both are
+  // already gated in `get_verification_photo()` — unverified or Humans Only
+  // arrives as `null` and `[]` — so there is no privacy decision left to
+  // make here, only whether there is anything to draw.
+  const socialLinks = parseSocialLinks(photo.social_links);
+  const hasOwnerDetails = Boolean(photo.display_name) || socialLinks.length > 0;
+
   return (
     <>
       <SiteHeader alwaysVisible />
@@ -109,6 +117,45 @@ export default async function VerificationPage({ params }: PageProps) {
                 verified by <strong>@{photo.username}</strong> · captured{' '}
                 {capturedDate}
               </p>
+
+              {hasOwnerDetails && (
+                <section className={styles.owner}>
+                  {photo.display_name && (
+                    <p className={styles.ownerName}>{photo.display_name}</p>
+                  )}
+                  {socialLinks.length > 0 && (
+                    <ul className={styles.socials}>
+                      {/* Keyed by position: nothing stops a user listing
+                          the same platform and handle twice. */}
+                      {socialLinks.map((link, index) => (
+                        <li key={`${index}-${link.platform}-${link.handle}`}>
+                          {/*
+                            User-authored destinations: `ugc` and `nofollow`
+                            keep them out of our link graph, and
+                            `noopener noreferrer` is the usual new-tab
+                            hygiene. The href itself is built from a
+                            per-platform template in `socialLinks.ts`, never
+                            from stored text.
+                          */}
+                          <a
+                            className={styles.social}
+                            href={link.href}
+                            target="_blank"
+                            rel="ugc nofollow noopener noreferrer"
+                          >
+                            <span className={styles.socialPlatform}>
+                              {link.label}
+                            </span>
+                            <span className={styles.socialHandle}>
+                              {link.display}
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              )}
             </>
           ) : (
             <div className={styles.gate}>

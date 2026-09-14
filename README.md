@@ -96,7 +96,9 @@ src/
   hooks/                 useScrolledPast, useSwipe
   lib/
     photos/              Verification-photo lookup + the Public-only privacy
-                         gate, shared by the page and its OG card
+                         gate, shared by the page and its OG card;
+                         socialLinks.ts turns the owner's stored handles
+                         into safe links
     supabase/server.ts   Publishable-key client for Server Components
   styles/
     tokens.css           Design tokens (colour, type, spacing, motion)
@@ -124,6 +126,18 @@ public/images/           Hero and phone-mockup artwork
   and then cached by every platform a link is pasted into, so a `Humans Only`
   photo leaking through that surface would be more public — and far harder to
   walk back — than the same leak on the page.
+- **The owner's name and social handles are gated in Postgres, not here.**
+  `get_verification_photo()` returns `display_name` and `social_links` only
+  when the owner is `verified` *and* `Public`, so the page just renders what it
+  is given. Don't re-derive the rule in the component, and don't relax it: a
+  real name is more identifying than the username, which a `Humans Only` page
+  already withholds.
+- **No stored value ever becomes a URL.** Handles are stored bare and
+  `socialLinks.ts` builds each href from a per-platform template, so the worst a
+  hostile value can do is point at the wrong account on the right platform —
+  never at another host, and never at `javascript:`. It re-validates the handle
+  shape too, rather than trusting a CHECK constraint that lives in a different
+  repo. Links get `rel="ugc nofollow noopener noreferrer"`.
 - **`generateMetadata` in `/[photoId]` restates its title and description under
   `openGraph`.** The root layout declares its own `openGraph` block, and an
   explicit parent value beats a child's plain `title`/`description`, so without
