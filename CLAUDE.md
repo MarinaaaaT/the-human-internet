@@ -33,9 +33,20 @@ handles, edited in the app's Settings → **Verification Page** and stored on
 `public.users` (`show_identity`, `display_first_name`/`display_last_name`,
 `social_links`). Those columns are user-written, so they claim nothing by
 themselves — `get_verification_photo()` withholds every one of them unless the
-owner's `verification_status` is `verified` (a column no client can write)
-*and* their privacy is `Public`, the same gate the username already passes.
-Keep that decision in the RPC; the page must not re-derive it. Handles are
+owner's `verification_status` is `verified` (a column no client can write),
+their privacy is `Public` (the same gate the username already passes), *and*
+the `custom_verification_pages` feature flag is on for them.
+
+**That flag is not read here, on purpose.** This site has only the anon key and
+no read access to `feature_flags`, and a kill switch that two
+independently-deployed clients must both honour is two switches, not one. The
+RPC resolves it against the photo's **owner** — the viewer is signed out and
+has no audience to resolve against — so a flagged-off owner's photo simply
+arrives with `display_name` null and `social_links` empty, which is the shape
+this page already handles for an unverified or Humans Only owner. Switching the
+flag off therefore retracts names and handles from links already in the wild
+with nothing to deploy. Keep all of it in the RPC; the page must not re-derive
+any of it. Handles are
 stored **bare** and `src/lib/photos/socialLinks.ts` builds every href from its
 own per-platform base URL — nothing user-supplied ever becomes a URL — and
 re-checks the `^[A-Za-z0-9._-]{1,64}$` shape rather than trusting the database

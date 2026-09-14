@@ -128,10 +128,14 @@ public/images/           Hero and phone-mockup artwork
   walk back — than the same leak on the page.
 - **The owner's name and social handles are gated in Postgres, not here.**
   `get_verification_photo()` returns `display_name` and `social_links` only
-  when the owner is `verified` *and* `Public`, so the page just renders what it
-  is given. Don't re-derive the rule in the component, and don't relax it: a
-  real name is more identifying than the username, which a `Humans Only` page
-  already withholds.
+  when the owner is `verified`, `Public`, *and* covered by the
+  `custom_verification_pages` feature flag, so the page just renders what it is
+  given. Don't re-derive any of it in the component, and don't relax it: a real
+  name is more identifying than the username, which a `Humans Only` page
+  already withholds. The flag in particular is deliberately **not** read by
+  this site — it has only the anon key, and a kill switch both clients have to
+  honour is two switches. Flagged off, the fields arrive null and empty, which
+  is a shape the page already handles.
 - **No stored value ever becomes a URL.** Handles are stored bare and
   `socialLinks.ts` builds each href from a per-platform template, so the worst a
   hostile value can do is point at the wrong account on the right platform —
