@@ -28,6 +28,33 @@ both through the one `get_verification_photo(p_lookup text)` RPC. Changing the
 route, either id format, or the RPC breaks links already shared in the wild.
 The app pins its half in `VerifiedPhotoLinkTests`.
 
+A verified owner can also decorate it: their real name and up to five social
+handles, edited in the app's Settings → **Verification Page** and stored on
+`public.users` (`show_identity`, `display_first_name`/`display_last_name`,
+`social_links`). Those columns are user-written, so they claim nothing by
+themselves — `get_verification_photo()` withholds every one of them unless the
+owner's `verification_status` is `verified` (a column no client can write),
+their privacy is `Public` (the same gate the username already passes), *and*
+the `custom_verification_pages` feature flag is on for them.
+
+**That flag is not read here, on purpose.** This site has only the anon key and
+no read access to `feature_flags`, and a kill switch that two
+independently-deployed clients must both honour is two switches, not one. The
+RPC resolves it against the photo's **owner** — the viewer is signed out and
+has no audience to resolve against — so a flagged-off owner's photo simply
+arrives with `display_name` null and `social_links` empty, which is the shape
+this page already handles for an unverified or Humans Only owner. Switching the
+flag off therefore retracts names and handles from links already in the wild
+with nothing to deploy. Keep all of it in the RPC; the page must not re-derive
+any of it. Handles are
+stored **bare** and `src/lib/photos/socialLinks.ts` builds every href from its
+own per-platform base URL — nothing user-supplied ever becomes a URL — and
+re-checks the `^[A-Za-z0-9._-]{1,64}$` shape rather than trusting the database
+constraint in another repo. Its `SOCIAL_PLATFORMS` table mirrors
+`is_valid_social_links()` in Postgres and `SocialPlatform` in the app; a
+platform missing here is simply not rendered, which is the right failure
+direction.
+
 It also owns the **Open Graph card** every shared link unfurls into
 (`opengraph-image.tsx`), which is what a verification link looks like on
 Facebook, Messages, X, Reddit or Slack — so that file, not the app, is where
