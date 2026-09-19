@@ -130,7 +130,9 @@ public/images/           Hero and phone-mockup artwork
   `get_verification_photo()` returns `display_name` and `social_links` only
   when the owner is `verified`, `Public`, *and* covered by the
   `custom_verification_pages` feature flag, so the page just renders what it is
-  given. Don't re-derive any of it in the component, and don't relax it: a real
+  given. `display_name` is composed from the name **Stripe Identity verified**,
+  never one the user typed — it sits beside the verified badge, so it has to be
+  the verified one. Don't re-derive any of it in the component, and don't relax it: a real
   name is more identifying than the username, which a `Humans Only` page
   already withholds. The flag in particular is deliberately **not** read by
   this site — it has only the anon key, and a kill switch both clients have to

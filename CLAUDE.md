@@ -29,9 +29,14 @@ route, either id format, or the RPC breaks links already shared in the wild.
 The app pins its half in `VerifiedPhotoLinkTests`.
 
 A verified owner can also decorate it: their real name and up to five social
-handles, edited in the app's Settings → **Verification Page** and stored on
-`public.users` (`show_identity`, `display_first_name`/`display_last_name`,
-`social_links`). Those columns are user-written, so they claim nothing by
+handles, from the app's Settings → **Verification Page**. The handles are
+theirs to type (`users.social_links`) and so is the decision to show the name
+(`users.show_identity`) — but **the name itself is Stripe's**, stored in
+`users.verified_first_name`/`verified_last_name` by `stripe-identity-webhook`
+from the verified session's `verified_outputs`, and guarded by triggers
+against any client write. It has to be: this page renders the name inches
+from "taken by a real, verified human", so a self-authored one would be a
+claim wearing our checkmark. Those columns are user-written, so they claim nothing by
 themselves — `get_verification_photo()` withholds every one of them unless the
 owner's `verification_status` is `verified` (a column no client can write),
 their privacy is `Public` (the same gate the username already passes), *and*
