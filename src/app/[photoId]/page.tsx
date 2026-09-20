@@ -12,6 +12,7 @@ import {
   formatCapturedAt,
   getVerificationPhoto,
   signedPhotoUrlIfPublic,
+  titleCaseName,
 } from '@/lib/photos/verificationPhoto';
 
 import styles from './page.module.css';
@@ -120,9 +121,24 @@ export default async function VerificationPage({ params }: PageProps) {
 
               {hasOwnerDetails && (
                 <section className={styles.owner}>
-                  {photo.display_name && (
-                    <p className={styles.ownerName}>{photo.display_name}</p>
-                  )}
+                  {photo.display_name &&
+                    (photo.identity_verified_at ? (
+                      /* `formatCapturedAt` is the page's one date format —
+                         see its doc — so the verification date reads the
+                         same as the capture date above it. */
+                      <p className={styles.identityStatement}>
+                        Identity Last Verified by Stripe on{' '}
+                        {formatCapturedAt(photo.identity_verified_at)} proving
+                        account owner is{' '}
+                        <strong>{titleCaseName(photo.display_name)}</strong>
+                      </p>
+                    ) : (
+                      /* Verified before the date was recorded. The name is
+                         still true; the sentence would not be. */
+                      <p className={styles.ownerName}>
+                        {titleCaseName(photo.display_name)}
+                      </p>
+                    ))}
                   {socialLinks.length > 0 && (
                     <ul className={styles.socials}>
                       {/* Keyed by position: nothing stops a user listing

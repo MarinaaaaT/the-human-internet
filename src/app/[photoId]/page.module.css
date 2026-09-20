@@ -99,6 +99,17 @@
   color: var(--text-primary);
 }
 
+.identityStatement {
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+
+.identityStatement strong {
+  color: var(--text-primary);
+  font-weight: var(--weight-bold);
+}
+
 .socials {
   display: flex;
   flex-wrap: wrap;

@@ -34,7 +34,15 @@ theirs to type (`users.social_links`) and so is the decision to show the name
 (`users.show_identity`) — but **the name itself is Stripe's**, stored in
 `users.verified_first_name`/`verified_last_name` by `stripe-identity-webhook`
 from the verified session's `verified_outputs`, and guarded by triggers
-against any client write. It has to be: this page renders the name inches
+against any client write. The page states it as *"Identity Last Verified by
+Stripe on {date} proving account owner is {Name}"*, the date coming from
+`users.identity_verified_at` (the webhook event's own time, guarded the same
+way). No date on file — anyone verified before it was recorded — falls back to
+the bare name, because the name is still true and the sentence would not be.
+The name is re-cased for display by `titleCaseName`: these come off identity
+documents and arrive shouting (`JORDAN JAMES FAVA`), and only fully-uppercase
+values are touched, so a deliberately-cased `van der Berg` survives intact.
+The app mirrors all of this in `VerifiedIdentity`. It has to be: this page renders the name inches
 from "taken by a real, verified human", so a self-authored one would be a
 claim wearing our checkmark. Those columns are user-written, so they claim nothing by
 themselves — `get_verification_photo()` withholds every one of them unless the
