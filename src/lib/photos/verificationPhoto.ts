@@ -46,6 +46,13 @@ export interface VerificationPhoto {
    */
   display_name: string | null;
   /**
+   * When Stripe Identity last verified the owner. Gated identically to
+   * `display_name` — the page states them in one sentence, so they appear
+   * and disappear together. Null for anyone verified before this was
+   * recorded, and the page falls back to the bare name.
+   */
+  identity_verified_at: string | null;
+  /**
    * Raw `users.social_links` JSON — deliberately `unknown`. Run it through
    * `parseSocialLinks` (see `./socialLinks`) rather than reading it
    * directly: it is user-authored text on a page strangers load, and that
@@ -103,6 +110,36 @@ export async function signedPhotoUrlIfPublic(
     return null;
   }
   return data?.signedUrl ?? null;
+}
+
+/**
+ * Re-cases a name that arrived shouting.
+ *
+ * Stripe's `verified_outputs` names are read off identity documents, which
+ * are usually set entirely in capitals — the live data here is
+ * "JORDAN JAMES" / "FAVA". Printed beside the verified badge that reads as a
+ * database dump rather than a person.
+ *
+ * Only *fully* uppercase values are touched. Anything already containing a
+ * lowercase letter was cased deliberately ("van der Berg", "McDonald") and
+ * is returned untouched, because re-casing it could only make it worse.
+ * Word breaks include apostrophes and hyphens, so O'BRIEN and MARY-JANE come
+ * out right.
+ *
+ * Known limit: "MCDONALD" becomes "Mcdonald". Spotting the Mc/Mac/O' class
+ * of surname from the string alone isn't reliable — the same rule would
+ * mangle "MACEY" into "MacEy" — so this stops short on purpose.
+ */
+export function titleCaseName(name: string): string {
+  if (name !== name.toUpperCase()) {
+    return name;
+  }
+  return name
+    .toLowerCase()
+    .replace(
+      /(^|[\s'\u2019-])([a-z])/g,
+      (_match, boundary: string, letter: string) => boundary + letter.toUpperCase(),
+    );
 }
 
 /** The one date format shown to signed-out visitors, page and card alike. */
