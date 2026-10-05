@@ -53,11 +53,14 @@
   --text-tertiary: #000;
   --text-on-dark: #000;
 
-  /* CTAs — every button except the App Store one. The secondary of a
-     primary/secondary pair takes a white label on the same fill. */
+  /* CTAs — every button except the App Store one. Primary: grey on
+     #F6F6F6. Secondary (of a pair): grey label + outline on white.
+     Tertiary: white on #E0E0E0, only for a button standing alone on a
+     non-white background. */
   --cta-bg: #f6f6f6;
-  --cta-fg: #a2a2a2;
-  --cta-fg-secondary: #fff;
+  --cta-fg: #767676;
+  --cta-tertiary-bg: #e0e0e0;
+  --cta-tertiary-fg: #fff;
 
   --divider: rgba(0, 0, 0, 0.08);
 
