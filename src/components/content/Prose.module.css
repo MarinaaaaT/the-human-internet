@@ -70,13 +70,13 @@
 }
 
 .prose a {
-  border-bottom: 1px solid var(--cyan-300);
+  border-bottom: 1px solid currentColor;
   padding-bottom: 1px;
-  color: var(--slate-600);
+  color: var(--text-primary);
 }
 
 .prose a:hover {
-  color: var(--slate-900);
+  color: var(--text-primary);
 }
 
 /* Headings are lowercased site-wide, which mangles anything that carries

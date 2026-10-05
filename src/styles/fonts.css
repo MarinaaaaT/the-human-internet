@@ -1,0 +1,35 @@
+/**
+ * Type families. Inter Display is the default everywhere; the html element
+ * carries data-font="neue" while the `neue_font` flag is on for everyone
+ * (read server-side in src/app/layout.tsx).
+ *
+ * PP Neue Montreal is served by /fonts/neue/[file], which 404s unless the
+ * database lets it through — so if this selector is ever forced on without
+ * the flag, the faces below fail to load and the stack falls back to Inter
+ * Display. The free set has no Medium or Bold: 100–500 use Regular, 600–900
+ * use Semibold, the same mapping as the app's `FontFamily`.
+ */
+
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('/fonts/neue/PPNeueMontreal-Regular.otf') format('opentype');
+  font-weight: 100 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('/fonts/neue/PPNeueMontreal-Semibold.otf') format('opentype');
+  font-weight: 600 900;
+  font-display: swap;
+}
+
+:root {
+  --font-display: var(--font-inter-display), system-ui, sans-serif;
+  --font-body: var(--font-inter-display), system-ui, sans-serif;
+}
+
+:root[data-font='neue'] {
+  --font-display: 'PP Neue Montreal', var(--font-inter-display), system-ui, sans-serif;
+  --font-body: 'PP Neue Montreal', var(--font-inter-display), system-ui, sans-serif;
+}

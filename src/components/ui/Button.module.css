@@ -42,34 +42,30 @@
 
 /* --------------------------------------------------------------- variants */
 
-/* Glass sits on imagery or the dark band, so it comes in a light and a dark
-   tone. Hover was a pair of JS mouse handlers in the original; it's a CSS
-   pseudo-class here, which also means it no-ops correctly on touch. */
-.glass {
-  backdrop-filter: blur(var(--blur-md));
-  box-shadow: var(--shadow-glass);
+/* Every CTA except the App Store one: #A2A2A2 on #F6F6F6. `glass`,
+   `outline` and `ghost` predate that and now all render the same; `tone` no
+   longer changes anything. */
+.glass,
+.outline,
+.ghost {
+  background: var(--cta-bg);
+  color: var(--cta-fg);
 }
 
-.glass[data-tone='light'] {
-  background: var(--glass-fill);
-  border: 1px solid var(--glass-border);
-  color: #fff;
+/* The secondary of a primary/secondary pair: white on the same fill. */
+.secondary {
+  background: var(--cta-bg);
+  color: var(--cta-fg-secondary);
 }
 
-.glass[data-tone='light']:hover:not(:disabled) {
-  background: var(--glass-fill-strong);
+.glass:hover:not(:disabled),
+.outline:hover:not(:disabled),
+.ghost:hover:not(:disabled),
+.secondary:hover:not(:disabled) {
+  filter: brightness(0.97);
 }
 
-.glass[data-tone='dark'] {
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(20, 23, 26, 0.14);
-  color: var(--slate-900);
-}
-
-.glass[data-tone='dark']:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.68);
-}
-
+/* The App Store CTA — exempt from the grey treatment above. */
 .solid {
   background: var(--accent);
   color: #fff;
@@ -80,24 +76,6 @@
   background: var(--accent-strong);
 }
 
-.outline {
-  background: transparent;
-  border: 1px solid var(--fog-300);
-  color: var(--slate-900);
-}
-
-.outline:hover:not(:disabled) {
-  background: var(--fog-100);
-}
-
-.ghost {
-  background: transparent;
-  color: var(--slate-700);
-}
-
-.ghost:hover:not(:disabled) {
-  background: var(--fog-200);
-}
 
 /* ------------------------------------------------------------------- icon */
 

@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './fonts.css';
 
 *,
 *::before,
@@ -34,12 +35,12 @@ body {
 }
 
 a {
-  color: var(--accent);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
 a:hover {
-  color: var(--accent-strong);
+  color: var(--text-primary);
 }
 
 /* Keyboard users get a visible ring; pointer users don't. */

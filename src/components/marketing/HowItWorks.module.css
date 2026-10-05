@@ -57,14 +57,14 @@
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
   text-transform: lowercase;
-  color: var(--slate-500);
+  color: var(--text-tertiary);
 }
 
 /* ------------------------------------------------------------------ tabs */
 
 .tabs {
   gap: var(--space-10);
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--divider);
 }
 
 .tab {
@@ -94,7 +94,7 @@
   margin-bottom: var(--space-1);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
-  color: var(--slate-500);
+  color: var(--text-tertiary);
 }
 
 .tabTitle {
@@ -135,7 +135,7 @@
 .panelText {
   font-size: var(--text-base);
   line-height: var(--leading-relaxed);
-  color: var(--fog-300);
+  color: var(--text-secondary);
   text-wrap: pretty;
 }
 
@@ -186,12 +186,10 @@
     pointer-events: auto;
     width: 52px;
     height: 52px;
-    border: 1px solid var(--glass-border);
+    border: none;
     border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-glass);
-    color: var(--fog-50);
+    background: var(--cta-bg);
+    color: var(--cta-fg);
     font-size: var(--text-md);
     cursor: pointer;
   }
@@ -200,13 +198,11 @@
     display: flex;
     align-items: center;
     padding: 0 18px;
-    border: 1px solid var(--glass-border);
     border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(12px);
+    background: var(--cta-bg);
     font-family: var(--font-display);
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-wide);
-    color: var(--fog-50);
+    color: var(--cta-fg);
   }
 }

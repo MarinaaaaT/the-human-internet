@@ -125,7 +125,9 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
-  background: var(--bg-sunken);
+  /* A link out to the owner's profile — a CTA. */
+  background: var(--cta-bg);
+  color: var(--cta-fg);
   font-size: var(--text-sm);
   text-decoration: none;
   border-bottom: none;
@@ -133,16 +135,10 @@
 }
 
 .social:hover {
-  background: var(--bg-surface);
-  box-shadow: var(--shadow-sm);
-}
-
-.socialPlatform {
-  color: var(--text-tertiary);
+  filter: brightness(0.97);
 }
 
 .socialHandle {
-  color: var(--text-primary);
   /* Handles are capped at 64 characters and can be a solid run of them, so
      this is the one place on the page that can force a horizontal scroll. */
   overflow-wrap: anywhere;
