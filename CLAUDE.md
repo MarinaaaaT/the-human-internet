@@ -50,8 +50,8 @@ owner's `verification_status` is `verified` (a column no client can write),
 their privacy is `Public` (the same gate the username already passes), *and*
 the `custom_verification_pages` feature flag is on for them.
 
-**That flag is not read here, on purpose.** This site has only the anon key and
-no read access to `feature_flags`, and a kill switch that two
+**That flag is not read here, on purpose.** This site has no read access to
+`feature_flags` (it reads only the allowlisted ones below, and this isn't one), and a kill switch that two
 independently-deployed clients must both honour is two switches, not one. The
 RPC resolves it against the photo's **owner** — the viewer is signed out and
 has no audience to resolve against — so a flagged-off owner's photo simply
@@ -79,6 +79,30 @@ depends on live DB state (the owner can change their privacy at any time). Both
 gate on the shared `signedPhotoUrlIfPublic` in `src/lib/photos/` rather than
 reimplementing the check, because a card is cached by every platform it is
 pasted into and a `Humans Only` leak there is far harder to walk back.
+
+## Feature flags and fonts
+
+The site reads flags through `isPublicFlagEnabled()` (`src/lib/featureFlags.ts`)
+→ the `public_feature_flag_enabled(p_key)` RPC, which answers only for an
+allowlist hard-coded in that function (today: `neue_font`), and only `all`
+counts as on — visitors are anonymous, so `admin` has nothing to resolve
+against. Results revalidate every 60s, which keeps the marketing pages static.
+Adding a flag means adding it to both the `PublicFlagKey` type and the SQL
+allowlist. **Reading a flag here only decides what the page asks for**; a
+visitor can edit the HTML. Anything that must stay private behind a flag needs
+its own gate in the database.
+
+Type is **Inter Display**, self-hosted from `src/fonts/inter-display` (SIL
+OFL), the same cuts the app bundles. While `neue_font` is `all`, `<html>`
+carries `data-font="neue"` and `src/styles/fonts.css` switches to **PP Neue
+Montreal**, served by `/fonts/neue/[file]` from the private `licensed-fonts`
+Supabase bucket. **Those files must never be committed here** (they're
+gitignored): our copy is the free-for-personal-use release and this repo is
+public. The route downloads with the anon key, and the bucket's storage policy
+(`can_read_licensed_fonts()`) refuses anon unless the flag is `all` — so the
+route 404s and the page falls back to Inter Display whatever the client asks
+for. Don't set `all` until a commercial licence is bought. The Open Graph card
+(`opengraph-image.tsx`) still uses Satori's default font.
 
 ## Anonymous access is narrower than it looks
 

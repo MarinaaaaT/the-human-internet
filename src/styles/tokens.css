@@ -3,8 +3,9 @@
  * motion. Nothing in the app should hard-code a hex value or a pixel scale;
  * reach for a token instead so a change here propagates everywhere.
  *
- * --font-display / --font-body are wired to the next/font families loaded in
- * src/app/layout.tsx.
+ * --font-display / --font-body are Inter Display (loaded by next/font in
+ * src/app/layout.tsx), or PP Neue Montreal when the `neue_font` flag is on —
+ * see fonts.css.
  */
 
 :root {

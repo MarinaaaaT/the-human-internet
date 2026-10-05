@@ -1,24 +1,26 @@
 import type { Metadata } from 'next';
-import { Archivo, Lato } from 'next/font/google';
+import localFont from 'next/font/local';
+
+import { isPublicFlagEnabled } from '@/lib/featureFlags';
 
 import '@/styles/globals.css';
 
 /**
- * The bundled export shipped 16 UUID-named font files (~800KB) inline.
- * next/font self-hosts both families, subsets them, and emits a stable
- * CSS variable — no layout shift and no network hop to Google.
+ * Inter Display, self-hosted from src/fonts (SIL Open Font License — see the
+ * OFL.txt beside it). Matches the static cuts bundled in the iOS app, so both
+ * surfaces set the same type.
  */
-const archivo = Archivo({
-  subsets: ['latin'],
+const interDisplay = localFont({
+  src: [
+    { path: '../fonts/inter-display/InterDisplay-Regular.woff2', weight: '400' },
+    { path: '../fonts/inter-display/InterDisplay-Medium.woff2', weight: '500' },
+    { path: '../fonts/inter-display/InterDisplay-SemiBold.woff2', weight: '600' },
+    { path: '../fonts/inter-display/InterDisplay-Bold.woff2', weight: '700' },
+    { path: '../fonts/inter-display/InterDisplay-ExtraBold.woff2', weight: '800' },
+    { path: '../fonts/inter-display/InterDisplay-Black.woff2', weight: '900' },
+  ],
   display: 'swap',
-  variable: '--font-display',
-});
-
-const lato = Lato({
-  subsets: ['latin'],
-  weight: ['400', '700', '900'],
-  display: 'swap',
-  variable: '--font-body',
+  variable: '--font-inter-display',
 });
 
 const SITE_URL =
@@ -44,11 +46,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // "Neue Font: Pay To Enable". Only switches which family the CSS asks for;
+  // whether the files can actually be fetched is decided by the storage
+  // policy behind /fonts/neue — see that route.
+  const neueFont = await isPublicFlagEnabled('neue_font');
+
   return (
-    <html lang="en" className={`${archivo.variable} ${lato.variable}`}>
+    <html
+      lang="en"
+      className={interDisplay.variable}
+      data-font={neueFont ? 'neue' : undefined}
+    >
       <body>{children}</body>
     </html>
   );
