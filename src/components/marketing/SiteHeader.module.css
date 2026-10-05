@@ -4,9 +4,9 @@
   right: 0;
   left: 0;
   z-index: 20;
-  background: rgba(242, 244, 245, 0.72);
+  background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  border-bottom: 1px solid var(--divider);
   /* Hidden until the page is scrolled past the hero. */
   opacity: 0;
   transform: translateY(-100%);

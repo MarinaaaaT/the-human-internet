@@ -34,19 +34,32 @@
   --violet-mist: #8f8fa3;
 
   /* ------------------------------------------------------ semantic surfaces */
-  --bg-page: var(--fog-100);
-  --bg-surface: var(--fog-50);
-  --bg-sunken: var(--fog-200);
-  /* The dark band behind "how it works". */
-  --bg-inverse: #31353a;
+  /* Every page background is pure white. */
+  --bg-page: #fff;
+  --bg-surface: #fff;
+  /* Image placeholders and fields: the one step off white, shared with the
+     CTA fill. */
+  --bg-sunken: #f6f6f6;
+  /* The band behind "how it works" — dark once, white now like the rest. */
+  --bg-inverse: #fff;
   /* Matches the flat grey at the top of the hero photograph (~#eeeeed), so
      the image can meet the page with no visible seam. */
   --bg-hero: #eeefef;
 
-  --text-primary: var(--slate-900);
-  --text-secondary: var(--slate-600);
-  --text-tertiary: var(--slate-500);
-  --text-on-dark: var(--fog-50);
+  /* All text that isn't on a button is pure black. The tiers stay separate
+     tokens so a hierarchy can come back with a one-line change. */
+  --text-primary: #000;
+  --text-secondary: #000;
+  --text-tertiary: #000;
+  --text-on-dark: #000;
+
+  /* CTAs — every button except the App Store one. The secondary of a
+     primary/secondary pair takes a white label on the same fill. */
+  --cta-bg: #f6f6f6;
+  --cta-fg: #a2a2a2;
+  --cta-fg-secondary: #fff;
+
+  --divider: rgba(0, 0, 0, 0.08);
 
   --surface-card: rgba(255, 255, 255, 0.55);
   --surface-card-border: rgba(255, 255, 255, 0.65);

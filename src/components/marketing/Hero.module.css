@@ -93,12 +93,12 @@
 
 .ledeLink {
   padding-bottom: 1px;
-  border-bottom: 1px solid var(--cyan-300);
-  color: var(--slate-600);
+  border-bottom: 1px solid currentColor;
+  color: var(--text-primary);
 }
 
 .ledeLink:hover {
-  color: var(--slate-900);
+  color: var(--text-primary);
 }
 
 .actions {

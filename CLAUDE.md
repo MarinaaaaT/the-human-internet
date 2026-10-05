@@ -80,6 +80,18 @@ gate on the shared `signedPhotoUrlIfPublic` in `src/lib/photos/` rather than
 reimplementing the check, because a card is cached by every platform it is
 pasted into and a `Humans Only` leak there is far harder to walk back.
 
+## Colours
+
+Same three rules as the app: **backgrounds pure white** (`--bg-*`), **text not
+on a button pure black** (every `--text-*` tier is `#000`, kept as separate
+tokens so a hierarchy can come back in one line), and **every CTA except the
+App Store one is `#A2A2A2` on `#F6F6F6`** (`--cta-bg` / `--cta-fg`). The
+`glass`, `outline` and `ghost` button variants all render that now; `solid` is
+the App Store button and is exempt, as is `AppStoreBadge`. The secondary of a
+primary/secondary pair is `variant="secondary"`: white on `#F6F6F6`. The one
+exception is `--bg-hero`, which stays the photo's own top-edge grey so the
+hero image meets the page without a seam.
+
 ## Feature flags and fonts
 
 The site reads flags through `isPublicFlagEnabled()` (`src/lib/featureFlags.ts`)
