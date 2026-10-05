@@ -42,9 +42,9 @@
 
 /* --------------------------------------------------------------- variants */
 
-/* Every CTA except the App Store one: #A2A2A2 on #F6F6F6. `glass`,
-   `outline` and `ghost` predate that and now all render the same; `tone` no
-   longer changes anything. */
+/* Primary — every CTA except the App Store one: #767676 on #F6F6F6.
+   `glass`, `outline` and `ghost` predate that and now all render the same;
+   `tone` no longer changes anything. */
 .glass,
 .outline,
 .ghost {
@@ -52,16 +52,25 @@
   color: var(--cta-fg);
 }
 
-/* The secondary of a primary/secondary pair: white on the same fill. */
+/* The secondary of a primary/secondary pair: grey label and outline on
+   white. */
 .secondary {
-  background: var(--cta-bg);
-  color: var(--cta-fg-secondary);
+  background: #fff;
+  border: 1px solid var(--cta-fg);
+  color: var(--cta-fg);
+}
+
+/* Only for a button standing alone on a non-white background. */
+.tertiary {
+  background: var(--cta-tertiary-bg);
+  color: var(--cta-tertiary-fg);
 }
 
 .glass:hover:not(:disabled),
 .outline:hover:not(:disabled),
 .ghost:hover:not(:disabled),
-.secondary:hover:not(:disabled) {
+.secondary:hover:not(:disabled),
+.tertiary:hover:not(:disabled) {
   filter: brightness(0.97);
 }
 

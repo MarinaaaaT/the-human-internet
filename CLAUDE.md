@@ -85,10 +85,12 @@ pasted into and a `Humans Only` leak there is far harder to walk back.
 Same three rules as the app: **backgrounds pure white** (`--bg-*`), **text not
 on a button pure black** (every `--text-*` tier is `#000`, kept as separate
 tokens so a hierarchy can come back in one line), and **every CTA except the
-App Store one is `#A2A2A2` on `#F6F6F6`** (`--cta-bg` / `--cta-fg`). The
+App Store one is `#767676` on `#F6F6F6`** (`--cta-bg` / `--cta-fg`). The
 `glass`, `outline` and `ghost` button variants all render that now; `solid` is
-the App Store button and is exempt, as is `AppStoreBadge`. The secondary of a
-primary/secondary pair is `variant="secondary"`: white on `#F6F6F6`. The one
+the App Store button and is exempt, as is `AppStoreBadge`. The second of a
+primary/secondary pair is `variant="secondary"`: `#767676` label and outline on
+white. `variant="tertiary"` is white on `#E0E0E0`, **only for a button standing
+alone on a non-white background** — nothing on the site uses it yet. The one
 exception is `--bg-hero`, which stays the photo's own top-edge grey so the
 hero image meets the page without a seam.
 

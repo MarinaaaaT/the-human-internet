@@ -4,7 +4,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 import styles from './Button.module.css';
 
-export type ButtonVariant = 'glass' | 'solid' | 'outline' | 'ghost' | 'secondary';
+export type ButtonVariant = 'glass' | 'solid' | 'outline' | 'ghost' | 'secondary' | 'tertiary';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type ButtonTone = 'light' | 'dark';
 
