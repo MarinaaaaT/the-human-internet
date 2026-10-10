@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
 import { isPublicFlagEnabled } from '@/lib/featureFlags';
+import { SITE_URL } from '@/lib/site';
 
 import '@/styles/globals.css';
 
@@ -16,9 +17,6 @@ const interDisplay = localFont({
   display: 'swap',
   variable: '--font-inter-display',
 });
-
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://the-human-internet.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
