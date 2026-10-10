@@ -25,7 +25,8 @@ const DEMO_STEP_MS = 3000;
 interface HeroCard {
   image: StaticImageData;
   alt: string;
-  device: string;
+  /** Who took it: a name, a handle, or Anonymous. */
+  author: string;
   date: string;
   time: string;
   os: string;
@@ -39,7 +40,7 @@ const CARDS: HeroCard[] = [
   {
     image: candle,
     alt: 'A lit candle on a wooden stool',
-    device: 'iPhone 15 Pro',
+    author: 'Anonymous',
     date: 'August 2, 2026',
     time: '9:18 AM',
     os: 'iOS 19.0',
@@ -51,7 +52,7 @@ const CARDS: HeroCard[] = [
   {
     image: phone,
     alt: 'A phone showing a selfie, lying on stone',
-    device: 'iPhone 16',
+    author: 'Alice Johnson',
     date: 'September 4, 2026',
     time: '6:05 PM',
     os: 'iOS 19.0',
@@ -62,7 +63,7 @@ const CARDS: HeroCard[] = [
   {
     image: tile,
     alt: 'A blue painted tile held up to the camera',
-    device: 'iPhone 16 Pro Max',
+    author: '@Jman28',
     date: 'September 18, 2026',
     time: '3:42 PM',
     os: 'iOS 19.0.1',
@@ -79,7 +80,7 @@ function Reveal({ card }: { card: HeroCard }): ReactNode {
   return (
     <div className="flex flex-col gap-0.5 text-caption md:text-body lg:text-title">
       <VerifiedMark className="absolute top-4 right-4 h-5 md:top-6 md:right-6 md:h-7" />
-      <span>{card.device}</span>
+      <span>{card.author}</span>
       <span>
         {card.date} <span className="text-caption text-muted-foreground">{card.time}</span>
       </span>
