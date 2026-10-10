@@ -3,11 +3,11 @@ import Link from 'next/link';
 
 import { ContentPage } from '@/components/content/ContentPage';
 import { MaybeLink } from '@/components/content/MaybeLink';
-import { PreserveCase, Prose } from '@/components/content/Prose';
+import { Prose } from '@/components/content/Prose';
 import { EXTERNAL_LINKS, ROUTES } from '@/content/site';
 
 export const metadata: Metadata = {
-  title: 'about',
+  title: 'About',
   description:
     'The human internet is a dedicated space for humans online — tools to connect real people making real things.',
 };
@@ -15,12 +15,12 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <ContentPage
-      title="about"
+      title="About"
       lede="A dedicated space for humans on the internet."
-      breadcrumbs={[{ label: 'home', href: ROUTES.home }]}
+      breadcrumbs={[{ label: 'Home', href: ROUTES.home }]}
     >
       <Prose>
-        <h2>what is the human internet?</h2>
+        <h2>What is the human internet?</h2>
         <p>
           The human internet is a dedicated space for humans online.
           I&rsquo;m building tools to connect real people making real things,
@@ -42,9 +42,7 @@ export default function AboutPage() {
           corporation, like Kickstarter.
         </p>
 
-        <h2>
-          pro-human, not anti-<PreserveCase>AI</PreserveCase>
-        </h2>
+        <h2>Pro-human, not anti-AI.</h2>
         <p>I&rsquo;m not against AI. I&rsquo;m against AI slop.</p>
         <p>
           AI should be a tool that helps you express yourself better.
@@ -57,10 +55,7 @@ export default function AboutPage() {
           better output. That&rsquo;s what I&rsquo;m building for.
         </p>
 
-        <h2>
-          who am <PreserveCase>I</PreserveCase> and why did{' '}
-          <PreserveCase>I</PreserveCase> make the app?
-        </h2>
+        <h2>Who am I, and why did I make the app?</h2>
         {/* The intro video from the Notion source hasn't been recorded yet;
             set EXTERNAL_LINKS.introVideo to surface it here. */}
         <p>
@@ -79,7 +74,7 @@ export default function AboutPage() {
           goat video is real. Help me lol.
         </p>
 
-        <h2>get involved</h2>
+        <h2>Get involved.</h2>
         <p>
           This is being built in the open, and there&rsquo;s room for you in it.
         </p>

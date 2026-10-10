@@ -8,17 +8,11 @@ import '@/styles/globals.css';
 /**
  * Inter Display, self-hosted from src/fonts (SIL Open Font License — see the
  * OFL.txt beside it). Matches the static cuts bundled in the iOS app, so both
- * surfaces set the same type.
+ * surfaces set the same type. The design system has one weight (Medium), so
+ * only that cut is loaded; the others stay on disk for the app's sake.
  */
 const interDisplay = localFont({
-  src: [
-    { path: '../fonts/inter-display/InterDisplay-Regular.woff2', weight: '400' },
-    { path: '../fonts/inter-display/InterDisplay-Medium.woff2', weight: '500' },
-    { path: '../fonts/inter-display/InterDisplay-SemiBold.woff2', weight: '600' },
-    { path: '../fonts/inter-display/InterDisplay-Bold.woff2', weight: '700' },
-    { path: '../fonts/inter-display/InterDisplay-ExtraBold.woff2', weight: '800' },
-    { path: '../fonts/inter-display/InterDisplay-Black.woff2', weight: '900' },
-  ],
+  src: [{ path: '../fonts/inter-display/InterDisplay-Medium.woff2', weight: '500' }],
   display: 'swap',
   variable: '--font-inter-display',
 });

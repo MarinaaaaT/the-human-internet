@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { ContentPage } from '@/components/content/ContentPage';
-import { Callout, PreserveCase, Prose } from '@/components/content/Prose';
+import { Callout, Faq, Prose } from '@/components/content/Prose';
 import {
   CONTENT_AUTHENTICITY_URL,
   ROUTES,
@@ -11,7 +11,7 @@ import {
 } from '@/content/site';
 
 export const metadata: Metadata = {
-  title: 'verification',
+  title: 'Verification',
   description:
     'How we prove a real person took a real photo — and what that proof does and does not cover.',
 };
@@ -19,11 +19,11 @@ export const metadata: Metadata = {
 export default function VerificationPage() {
   return (
     <ContentPage
-      title="verification"
+      title="Verification"
       lede="How we prove a real person took a real photo."
       breadcrumbs={[
-        { label: 'home', href: ROUTES.home },
-        { label: 'about', href: ROUTES.about },
+        { label: 'Home', href: ROUTES.home },
+        { label: 'About', href: ROUTES.about },
       ]}
     >
       <Prose>
@@ -51,7 +51,7 @@ export default function VerificationPage() {
           </li>
         </ul>
 
-        <h2>what you actually get</h2>
+        <h2>What you actually get.</h2>
         <p>
           Once a photo is verified, we generate a unique link for that photo.
           You share it wherever you post — in the caption, in your bio, in the
@@ -63,7 +63,7 @@ export default function VerificationPage() {
           account. They just click.
         </p>
 
-        <h2>what we can&rsquo;t promise</h2>
+        <h2>What we can&rsquo;t promise.</h2>
         <Callout>
           <p>
             We verify that a human took a photo with a real camera. We do not
@@ -74,12 +74,12 @@ export default function VerificationPage() {
             We&rsquo;re not trying to be perfect. We&rsquo;re trying to force a
             real human into the loop, because we think that alone cuts the sheer
             volume of AI slop people are drowning in. We&rsquo;re pro-human, not
-            anti-<PreserveCase>AI</PreserveCase>.
+            anti-AI.
           </p>
         </Callout>
 
         <h2 id={VERIFICATION_SECTIONS.humanity}>
-          proving a human took the photo
+          Proving a human took the photo.
         </h2>
         <ol>
           <li>You snap a photo in our app.</li>
@@ -108,7 +108,7 @@ export default function VerificationPage() {
         </p>
 
         <h2 id={VERIFICATION_SECTIONS.identity}>
-          proving you&rsquo;re a real person (optional)
+          Proving you&rsquo;re a real person (optional).
         </h2>
         <Callout>
           <p>
@@ -128,10 +128,8 @@ export default function VerificationPage() {
           <li>You take a selfie.</li>
         </ol>
         <p>
-          The selfie is what makes the <PreserveCase>ID</PreserveCase>
-          meaningful. Our identity provider matches your face against the photo
-          on the document, which confirms a live person is actually holding that{' '}
-          <PreserveCase>ID</PreserveCase> — rather than someone holding up a
+          The selfie is what makes the ID meaningful. Our identity provider matches your face against the photo
+          on the document, which confirms a live person is actually holding that ID — rather than someone holding up a
           photo of somebody else&rsquo;s license.
         </p>
         <p>
@@ -143,13 +141,13 @@ export default function VerificationPage() {
           this account?
         </p>
 
-        <h2>your privacy</h2>
+        <h2>Your privacy.</h2>
         <p>
           We ask for identity information so we can confirm you&rsquo;re a
           unique human. That&rsquo;s it.
         </p>
         <p>
-          Your <PreserveCase>ID</PreserveCase> photo and selfie go to our
+          Your ID photo and selfie go to our
           identity provider to run the check. They&rsquo;re never posted, never
           attached to your photos, and never shown to anyone on the human
           internet.
@@ -165,26 +163,23 @@ export default function VerificationPage() {
           gets it may gain access to your information. So don&rsquo;t.
         </p>
 
-        <h2>frequently asked questions</h2>
+        <h2>Frequently asked questions.</h2>
 
-        <details>
-          <summary>Why is this iOS only?</summary>
+        <Faq question="Why is this iOS only?">
           <p>
             Right now the app is iPhone-only. Android support is something we
             want to build.
           </p>
-        </details>
+        </Faq>
 
-        <details>
-          <summary>Why only photos?</summary>
+        <Faq question="Why only photos?">
           <p>
             Photos are where we&rsquo;re starting. Other content types are
             coming.
           </p>
-        </details>
+        </Faq>
 
-        <details>
-          <summary>Why can&rsquo;t I import photos from my camera roll?</summary>
+        <Faq question="Why can’t I import photos from my camera roll?">
           <p>
             Your iPhone&rsquo;s physical camera does create the signature we
             need — but Apple&rsquo;s built-in Camera app doesn&rsquo;t expose it
@@ -195,26 +190,24 @@ export default function VerificationPage() {
             If we build an Android app, we&rsquo;ll be able to support importing
             there.
           </p>
-        </details>
+        </Faq>
 
-        <details>
-          <summary>What if I edit my photos?</summary>
+        <Faq question="What if I edit my photos?">
           <p>
             Editing happens after capture, which is exactly the point where the
             signature can break. For now, verification works best on photos
             shared as shot. We know this is a real limitation for a lot of
             creators and we&rsquo;re working on it.
           </p>
-        </details>
+        </Faq>
 
-        <details>
-          <summary>Can I get banned?</summary>
+        <Faq question="Can I get banned?">
           <p>
             Yes — if you abuse duplicate accounts, resell accounts, steal
             others&rsquo; content, or obviously photograph AI-generated content,
             we&rsquo;ll remove you from the human internet.
           </p>
-        </details>
+        </Faq>
       </Prose>
     </ContentPage>
   );

@@ -1,16 +1,15 @@
 import { AppleLogo } from '@/components/icons/AppleLogo';
+import { Button } from '@/components/ui/button';
 import { APP_STORE_URL } from '@/content/site';
 
-import styles from './AppStoreBadge.module.css';
-
+/** The one primary CTA on the homepage: a black pill. */
 export function AppStoreBadge() {
   return (
-    <a className={styles.badge} href={APP_STORE_URL}>
-      <AppleLogo />
-      <span className={styles.label}>
-        <span className={styles.kicker}>download on the</span>
-        <span className={styles.store}>app store</span>
-      </span>
-    </a>
+    <Button asChild>
+      <a href={APP_STORE_URL}>
+        <AppleLogo className="size-5" />
+        Download on the App Store
+      </a>
+    </Button>
   );
 }

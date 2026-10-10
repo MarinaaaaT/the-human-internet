@@ -1,0 +1,16 @@
+{
+  "$comment": "Where build.mjs writes generated files. Paths are relative to the WEB repo root. `ios.repo` / `android.repo` point at the sibling checkouts; pass --web-only to leave them untouched.",
+  "web": {
+    "tokensCss": "src/styles/tokens.css",
+    "tokensTs": "src/styles/tokens.ts"
+  },
+  "ios": {
+    "repo": "../../the-human-internet-app",
+    "tokensSwift": "the-human-internet/the-human-internet/DesignSystem/DesignTokens.swift"
+  },
+  "android": {
+    "repo": "../../the-human-internet-android",
+    "tokensKt": "app/src/main/java/com/thehumaninternet/app/designsystem/DesignTokens.kt",
+    "package": "com.thehumaninternet.app.designsystem"
+  }
+}

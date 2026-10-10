@@ -1,7 +1,8 @@
 # the human internet — website
 
 Marketing site **and the signed-out photo verification page** for The Human
-Internet. Built with **Next.js 16 (App Router)**, TypeScript, and CSS Modules.
+Internet. Built with **Next.js 16 (App Router)**, TypeScript, Tailwind CSS v4
+and shadcn/ui, styled by the shared design system (`DESIGN.md`, `AGENTS.md`).
 Deployed on Vercel.
 
 Two sibling repos share the same Supabase project (`xpjkgngifffzdaikjakw`): the
@@ -32,6 +33,7 @@ Then open http://localhost:3000.
 | `npm start`         | Serve a production build locally      |
 | `npm run lint`      | ESLint                                |
 | `npm run typecheck` | `tsc --noEmit`                        |
+| `npm run tokens`    | Regenerate web tokens from `design-system/tokens.json` |
 
 ## Deploying
 
@@ -85,11 +87,15 @@ src/
       page.tsx           The page itself
       opengraph-image.tsx  The card a shared link unfurls into
   components/
+    styleguide/          /styleguide — every token and component
     marketing/           Page sections (Hero, HowItWorks, SiteHeader, AppStoreBadge)
+    brand/               Design-system brand components (VerifiedMark,
+                         Wordmark, ProofCard, NotificationCard, …)
     content/             Long-form page furniture: ContentPage (title +
                          breadcrumbs), Prose/Callout (typography), MaybeLink
-    ui/                  Reusable design-system primitives (Button)
-    icons/               Inline SVG icons
+    ui/                  shadcn/ui primitives restyled by the tokens (button,
+                         card, input, dialog, badge)
+    icons/               Inline SVG icons (brand logos lucide doesn't have)
   content/
     site.ts              Site-wide constants: nav links, App Store URL
     steps.ts             Copy + images for the "how it works" steps
@@ -101,21 +107,33 @@ src/
                          into safe links
     supabase/server.ts   Publishable-key client for Server Components
   styles/
-    tokens.css           Design tokens (colour, type, spacing, motion)
-    globals.css          Reset + base element styles
+    tokens.css           GENERATED design tokens — don't edit
+    tokens.ts            GENERATED colours for the OG card — don't edit
+    fonts.css            Inter Display / PP Neue Montreal (flagged)
+    globals.css          Tailwind setup: tokens → utilities, base styles
+design-system/           tokens.json (master for web, iOS, Android), the
+                         generator, its targets, and the master DESIGN.md
+public/brand/            mark.svg, wordmark.svg
 public/images/           Hero and phone-mockup artwork
 ```
 
 ### Conventions
 
-- **Design tokens are the source of truth.** Never hard-code a hex value or a
-  spacing number in a component — add or use a token in `src/styles/tokens.css`.
-- **Styling is CSS Modules**, co-located with the component
-  (`Hero.tsx` + `Hero.module.css`). No inline `style` objects.
+- **Design tokens are the source of truth.** Values live in
+  `design-system/tokens.json`; change them there and run `npm run tokens`.
+  Components use token utilities only (`bg-surface`, `text-label`,
+  `rounded-lg`) — no hex values, no `p-[13px]`. The full rules, and a grep
+  that checks them, are in `AGENTS.md`.
+- **Styling is Tailwind utilities** in the component's `className`, built on
+  `src/components/ui` (shadcn) and `src/components/brand`. No CSS Modules, no
+  inline `style` objects — except the OG card, which Satori renders and so
+  takes literal values from the generated `src/styles/tokens.ts`.
 - **Server Components by default.** Only add `'use client'` when a component
   genuinely needs state, effects, or event handlers — currently just
-  `SiteHeader` (scroll listener) and `HowItWorks` (step state, swipe).
-- **Responsive layout is CSS, not JavaScript.** Breakpoint is `760px`.
+  `SiteHeader` (scroll listener), `HowItWorks` (step state, swipe), and the
+  interactive brand components (`ProofCard`, `ShareActions`, `BrandReveal`,
+  `BoilingMark`).
+- **Responsive layout is CSS, not JavaScript.** Mobile-first; Tailwind's `md` (768px) is the main breakpoint.
 - **`/[photoId]` is `force-dynamic`** and must stay that way, and so is its
   `opengraph-image` sibling, for the same reason. Both mint a short-lived signed
   Storage URL per request and their response depends on live DB state (the owner

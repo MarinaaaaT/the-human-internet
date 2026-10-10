@@ -2,8 +2,6 @@ import Link from 'next/link';
 
 import type { ReactNode } from 'react';
 
-import styles from './ContentPage.module.css';
-
 export interface Crumb {
   label: string;
   href: string;
@@ -26,26 +24,35 @@ export function ContentPage({
   children,
 }: ContentPageProps) {
   return (
-    <article className={styles.page}>
-      <div className={styles.container}>
-        <header className={styles.header}>
+    // The top padding clears the fixed site header, pinned on content pages.
+    <article className="pt-24 pb-16 md:pt-32 md:pb-24">
+      <div className="mx-auto max-w-3xl px-6 md:px-10">
+        <header className="mb-12">
           {breadcrumbs.length > 0 && (
-            <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+            <nav
+              className="mb-6 flex flex-wrap items-center gap-2 text-caption text-muted-foreground"
+              aria-label="Breadcrumb"
+            >
               {breadcrumbs.map((crumb) => (
                 <span key={crumb.href}>
-                  <Link href={crumb.href}>{crumb.label}</Link>
-                  <span className={styles.separator} aria-hidden="true">
-                    {' / '}
-                  </span>
+                  <Link
+                    href={crumb.href}
+                    className="transition-colors duration-fast ease-out hover:text-foreground"
+                  >
+                    {crumb.label}
+                  </Link>
+                  <span aria-hidden="true">{' / '}</span>
                 </span>
               ))}
-              <span className={styles.current} aria-current="page">
+              <span className="text-foreground" aria-current="page">
                 {title}
               </span>
             </nav>
           )}
-          <h1 className={styles.title}>{title}</h1>
-          {lede && <p className={styles.lede}>{lede}</p>}
+          <h1 className="text-h2 text-foreground md:text-h1">{title}</h1>
+          {lede && (
+            <p className="mt-5 text-title text-muted-foreground text-pretty">{lede}</p>
+          )}
         </header>
         {children}
       </div>
