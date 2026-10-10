@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { CheckCircle } from '@/components/icons/CheckCircle';
+import { LabelValue } from '@/components/brand/LabelValue';
+import { ProofCard } from '@/components/brand/ProofCard';
+import { ShareActions } from '@/components/brand/ShareActions';
+import { VerifiedMark } from '@/components/brand/VerifiedMark';
 import { SiteHeader } from '@/components/marketing/SiteHeader';
-import { ButtonLink } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { APP_STORE_URL, ROUTES, SITE_NAME } from '@/content/site';
 import { parseSocialLinks } from '@/lib/photos/socialLinks';
 import {
@@ -14,8 +16,6 @@ import {
   signedPhotoUrlIfPublic,
   titleCaseName,
 } from '@/lib/photos/verificationPhoto';
-
-import styles from './page.module.css';
 
 // Signed URLs are minted fresh per request — this route can't be statically
 // generated, since the response depends on live DB state per photo id.
@@ -81,70 +81,88 @@ export default async function VerificationPage({ params }: PageProps) {
   const socialLinks = parseSocialLinks(photo.social_links);
   const hasOwnerDetails = Boolean(photo.display_name) || socialLinks.length > 0;
 
+  const showPhoto = photo.is_public && signedPhotoUrl;
+
   return (
     <>
       <SiteHeader alwaysVisible />
-      <main className={styles.page}>
-        <div className={styles.container}>
-          <div className={styles.badgeCard}>
-            <CheckCircle className={styles.badgeIcon} />
-            <p className={styles.badgeHeading}>
+      <main className="min-h-svh pt-24 pb-24">
+        <div className="mx-auto flex max-w-app flex-col gap-4 px-6">
+          <div className="flex items-center gap-3 rounded-md bg-surface p-4">
+            <VerifiedMark className="h-7" />
+            <p className="text-title text-foreground">
               This photo was taken by a real
-              {photo.is_public && signedPhotoUrl ? ', verified' : ''} human!
+              {showPhoto ? ', verified' : ''} human!
             </p>
           </div>
 
-          <p className={styles.learnMore}>
-            <span className={styles.learnMorePrompt}>How do you know? </span>
-            <Link className={styles.learnMoreLink} href={ROUTES.verification}>
+          <p className="mb-4 text-label text-muted-foreground">
+            How do you know?{' '}
+            <Link
+              className="text-foreground underline underline-offset-4 transition-colors duration-fast ease-out hover:text-muted-foreground"
+              href={ROUTES.verification}
+            >
               Click here to learn more.
             </Link>
           </p>
 
-          {photo.is_public && signedPhotoUrl ? (
+          {showPhoto ? (
             <>
-              <div className={styles.photoFrame}>
-                <Image
-                  className={styles.photo}
-                  src={signedPhotoUrl}
-                  alt="Verified human-captured photo"
-                  width={1200}
-                  height={1200}
-                  sizes="(max-width: 560px) 100vw, 560px"
-                  unoptimized
-                />
-              </div>
-              <p className={styles.caption}>
-                verified by <strong>@{photo.username}</strong> · captured{' '}
-                {capturedDate}
-              </p>
+              <ProofCard
+                src={signedPhotoUrl}
+                alt="Verified human-captured photo"
+                width={1200}
+                height={1200}
+                sizes="(max-width: 440px) 100vw, 440px"
+                unoptimized
+                priority
+                reveal={
+                  <>
+                    <span>@{photo.username}</span>
+                    <span>{capturedDate}</span>
+                  </>
+                }
+                info={
+                  <div className="flex flex-col gap-3">
+                    <LabelValue label="Verified by" size="title">
+                      @{photo.username}
+                    </LabelValue>
+                    <LabelValue label="Captured" size="title">
+                      {capturedDate}
+                    </LabelValue>
+                  </div>
+                }
+                actions={<ShareActions />}
+              />
 
               {hasOwnerDetails && (
-                <section className={styles.owner}>
+                <section className="flex flex-col gap-3 border-t border-border pt-5">
                   {photo.display_name &&
                     (photo.identity_verified_at ? (
                       /* `formatCapturedAt` is the page's one date format —
                          see its doc — so the verification date reads the
                          same as the capture date above it. */
-                      <p className={styles.identityStatement}>
+                      <p className="text-label text-muted-foreground">
                         Identity Last Verified by Stripe on{' '}
                         {formatCapturedAt(photo.identity_verified_at)} proving
                         account owner is{' '}
-                        <strong>{titleCaseName(photo.display_name)}</strong>
+                        <strong className="text-foreground">
+                          {titleCaseName(photo.display_name)}
+                        </strong>
                       </p>
                     ) : (
                       /* Verified before the date was recorded. The name is
                          still true; the sentence would not be. */
-                      <p className={styles.ownerName}>
+                      <p className="text-title text-foreground">
                         {titleCaseName(photo.display_name)}
                       </p>
                     ))}
                   {socialLinks.length > 0 && (
-                    <ul className={styles.socials}>
+                    <ul className="flex flex-wrap gap-2">
                       {/* Keyed by position: nothing stops a user listing
                           the same platform and handle twice. */}
                       {socialLinks.map((link, index) => (
-                        <li key={`${index}-${link.platform}-${link.handle}`}>
+                        <li key={`${index}-${link.platform}-${link.handle}`} className="max-w-full">
                           {/*
                             User-authored destinations: `ugc` and `nofollow`
                             keep them out of our link graph, and
@@ -153,19 +171,23 @@ export default async function VerificationPage({ params }: PageProps) {
                             per-platform template in `socialLinks.ts`, never
                             from stored text.
                           */}
-                          <a
-                            className={styles.social}
-                            href={link.href}
-                            target="_blank"
-                            rel="ugc nofollow noopener noreferrer"
+                          <Button
+                            asChild
+                            variant="secondary"
+                            className="h-auto min-h-control max-w-full py-2 whitespace-normal"
                           >
-                            <span className={styles.socialPlatform}>
-                              {link.label}
-                            </span>
-                            <span className={styles.socialHandle}>
-                              {link.display}
-                            </span>
-                          </a>
+                            <a
+                              href={link.href}
+                              target="_blank"
+                              rel="ugc nofollow noopener noreferrer"
+                            >
+                              <span className="text-muted-foreground">{link.label}</span>
+                              {/* Handles are capped at 64 characters and can be
+                                  a solid run of them, so this is the one place
+                                  on the page that can force a horizontal scroll. */}
+                              <span className="min-w-0 wrap-anywhere">{link.display}</span>
+                            </a>
+                          </Button>
                         </li>
                       ))}
                     </ul>
@@ -174,21 +196,21 @@ export default async function VerificationPage({ params }: PageProps) {
               )}
             </>
           ) : (
-            <div className={styles.gate}>
-              <p className={styles.gateText}>
+            <div className="flex flex-col items-center gap-2 rounded-lg bg-surface px-6 py-8 text-center">
+              <p className="text-body text-foreground">
                 The human behind this photo decided they only want other
                 humans to see their photos.
               </p>
-              <p className={styles.gateText}>
+              <p className="text-body text-muted-foreground">
                 Join {SITE_NAME} to see exact photo contents.
               </p>
-              <div className={styles.gateActions}>
-                <ButtonLink href={APP_STORE_URL} variant="solid" size="md">
-                  Download app
-                </ButtonLink>
-                <a className={styles.openInApp} href="#">
-                  Open in app
-                </a>
+              <div className="mt-4 flex flex-col items-center gap-1">
+                <Button asChild>
+                  <a href={APP_STORE_URL}>Download app</a>
+                </Button>
+                <Button asChild variant="tertiary">
+                  <a href="#">Open in app</a>
+                </Button>
               </div>
             </div>
           )}

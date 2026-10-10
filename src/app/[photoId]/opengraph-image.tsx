@@ -1,3 +1,6 @@
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
 import { ImageResponse } from 'next/og';
 
 import {
@@ -5,6 +8,7 @@ import {
   getVerificationPhoto,
   signedPhotoUrlIfPublic,
 } from '@/lib/photos/verificationPhoto';
+import { colors } from '@/styles/tokens';
 
 /**
  * The Open Graph card for a verification link.
@@ -36,33 +40,40 @@ const PHOTO_PANEL_WIDTH = 540;
 
 /**
  * Satori (which renders this) resolves neither CSS custom properties nor
- * CSS Modules, so — unlike everywhere else in this repo — the palette has
- * to be written out literally. These are copies of the tokens named in the
- * comments; keep them in step with `src/styles/tokens.css`.
+ * Tailwind classes, so the palette comes from the generated
+ * `src/styles/tokens.ts` — the same tokens.json values as the CSS, written
+ * out literally.
  */
 const COLOR = {
-  ink: '#0c0e10', // --ink
-  surface: '#14171a', // --slate-900
-  border: '#282f33', // --slate-800
-  textPrimary: '#fbfcfc', // --fog-50
-  textSecondary: '#aab5ba', // --fog-400
-  accent: '#5a94a0', // --cyan-500 / --verified
+  background: colors.background,
+  foreground: colors.foreground,
+  muted: colors.mutedForeground,
 } as const;
 
-function VerifiedBadge({ size: iconSize }: { size: number }) {
+/**
+ * The spiral, from the same file the site uses (public/brand/mark.svg) —
+ * "verified" is always the mark, never a check. Satori's renderer rejects
+ * that file as an <img>, so its one path is lifted out and drawn inline.
+ * Read once per server instance, as Next's opengraph-image docs do for
+ * local assets.
+ */
+const MARK_PATH = (
+  await readFile(join(process.cwd(), 'public/brand/mark.svg'), 'utf8')
+).match(/\sd="([^"]+)"/)?.[1];
+
+/** The mark's viewBox, so it never stretches. */
+const MARK_VIEWBOX = { width: 1402, height: 1482 };
+
+function Mark({ size: width }: { size: number }) {
+  if (!MARK_PATH) return null;
   return (
     <svg
-      width={iconSize}
-      height={iconSize}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={COLOR.accent}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      width={width}
+      height={Math.round((width * MARK_VIEWBOX.height) / MARK_VIEWBOX.width)}
+      viewBox={`0 0 ${MARK_VIEWBOX.width} ${MARK_VIEWBOX.height}`}
+      fill={COLOR.foreground}
     >
-      <circle cx="12" cy="12" r="10" />
-      <path d="m9 12 2 2 4-4" />
+      <path fillRule="evenodd" d={MARK_PATH} />
     </svg>
   );
 }
@@ -91,28 +102,29 @@ export default async function OpenGraphImage({
             justifyContent: 'center',
             width: '100%',
             height: '100%',
-            backgroundColor: COLOR.ink,
+            backgroundColor: COLOR.background,
             padding: 80,
           }}
         >
-          <VerifiedBadge size={96} />
+          <Mark size={96} />
           <div
             style={{
               marginTop: 40,
-              fontSize: 60,
-              fontWeight: 700,
-              color: COLOR.textPrimary,
+              fontSize: 64,
+              fontWeight: 500,
+              color: COLOR.foreground,
               textAlign: 'center',
-              lineHeight: 1.15,
+              lineHeight: 1,
+              letterSpacing: '-0.035em',
             }}
           >
-            A photo taken by a real human
+            A photo taken by a real human.
           </div>
           <div
             style={{
               marginTop: 24,
               fontSize: 30,
-              color: COLOR.textSecondary,
+              color: COLOR.muted,
               textAlign: 'center',
             }}
           >
@@ -120,7 +132,7 @@ export default async function OpenGraphImage({
               ? 'This human shares their photos with other humans only.'
               : 'Proof that real people are behind the content they create.'}
           </div>
-          <div style={{ marginTop: 48, fontSize: 26, color: COLOR.accent }}>
+          <div style={{ marginTop: 48, fontSize: 26, color: COLOR.foreground }}>
             the-human-internet.com
           </div>
         </div>
@@ -136,7 +148,7 @@ export default async function OpenGraphImage({
           display: 'flex',
           width: '100%',
           height: '100%',
-          backgroundColor: COLOR.ink,
+          backgroundColor: COLOR.background,
         }}
       >
         {/* Cropped to fill at full card height, so a portrait or a
@@ -160,32 +172,30 @@ export default async function OpenGraphImage({
             width: size.width - PHOTO_PANEL_WIDTH,
             height: '100%',
             padding: '0 56px',
-            backgroundColor: COLOR.surface,
-            borderLeft: `1px solid ${COLOR.border}`,
+            backgroundColor: COLOR.background,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <VerifiedBadge size={34} />
+            <Mark size={34} />
             <div
               style={{
                 marginLeft: 12,
-                fontSize: 22,
-                fontWeight: 700,
-                letterSpacing: '0.12em',
-                color: COLOR.accent,
+                fontSize: 24,
+                color: COLOR.muted,
               }}
             >
-              VERIFIED HUMAN
+              Verified human
             </div>
           </div>
 
           <div
             style={{
               marginTop: 28,
-              fontSize: 46,
-              fontWeight: 700,
-              lineHeight: 1.15,
-              color: COLOR.textPrimary,
+              fontSize: 52,
+              fontWeight: 500,
+              lineHeight: 1,
+              letterSpacing: '-0.035em',
+              color: COLOR.foreground,
             }}
           >
             This photo was taken by a real, verified human.
@@ -194,17 +204,17 @@ export default async function OpenGraphImage({
           <div
             style={{
               marginTop: 28,
-              fontSize: 26,
-              color: COLOR.textSecondary,
+              fontSize: 28,
+              color: COLOR.foreground,
             }}
           >
             {`@${photo.username}`}
           </div>
-          <div style={{ marginTop: 8, fontSize: 24, color: COLOR.textSecondary }}>
-            {`captured ${formatCapturedAt(photo.captured_at)}`}
+          <div style={{ marginTop: 8, fontSize: 24, color: COLOR.muted }}>
+            {`Captured ${formatCapturedAt(photo.captured_at)}`}
           </div>
 
-          <div style={{ marginTop: 44, fontSize: 24, color: COLOR.accent }}>
+          <div style={{ marginTop: 44, fontSize: 24, color: COLOR.foreground }}>
             the-human-internet.com
           </div>
         </div>

@@ -1,15 +1,17 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { KeyboardEvent } from 'react';
 
-import { Button, ButtonLink } from '@/components/ui/Button';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 import { HOW_IT_WORKS_STEPS } from '@/content/steps';
 import { useSwipe } from '@/hooks/useSwipe';
-
-import styles from './HowItWorks.module.css';
+import { cn } from '@/lib/utils';
 
 const STEP_COUNT = HOW_IT_WORKS_STEPS.length;
 const AUTO_ADVANCE_MS = 6000;
@@ -60,38 +62,44 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
     tabRefs.current[target]?.focus();
   };
 
+  // One step at a time on mobile; all three columns from md up.
+  const onlyActiveOnMobile = (index: number) =>
+    index === active ? undefined : 'max-md:hidden';
+
   return (
-    <section className={styles.section} id="how">
-      <div className={styles.inner}>
+    <section className="bg-background text-foreground" id="how">
+      <div className="mx-auto max-w-marketing px-6 pt-16 pb-32 md:px-10 md:pt-24 md:pb-24">
         <div
-          className={`${styles.columns} ${styles.phones}`}
+          className="mb-12 grid grid-cols-1 items-end justify-items-center gap-6 md:mb-24 md:grid-cols-3"
           {...swipeHandlers}
         >
           {HOW_IT_WORKS_STEPS.map((step, index) => (
             <button
               key={step.ordinal}
-              className={styles.phoneButton}
-              data-active={index === active}
+              className={cn('flex items-end justify-center', onlyActiveOnMobile(index))}
               onClick={() => select(index)}
-              aria-label={`show step ${index + 1}`}
+              aria-label={`Show step ${index + 1}`}
               aria-controls={panelId(index)}
             >
               <Image
-                className={styles.phoneImage}
+                className={cn(
+                  'h-96 w-auto max-w-full object-contain transition-opacity duration-base ease-out',
+                  index === active ? 'opacity-100' : 'opacity-40',
+                )}
                 src={step.image}
                 alt={step.imageAlt}
-                sizes="(max-width: 760px) 90vw, 33vw"
+                sizes="(max-width: 768px) 90vw, 33vw"
               />
             </button>
           ))}
         </div>
 
-        <p className={styles.kicker}>how it works</p>
+        <p className="mb-8 text-label text-muted-foreground">How it works</p>
 
         <div
-          className={`${styles.columns} ${styles.tabs}`}
+          className="grid grid-cols-1 gap-10 border-t border-border md:grid-cols-3"
           role="tablist"
-          aria-label="how it works"
+          aria-label="How it works"
         >
           {HOW_IT_WORKS_STEPS.map((step, index) => (
             <button
@@ -99,8 +107,7 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
               ref={(node) => {
                 tabRefs.current[index] = node;
               }}
-              className={styles.tab}
-              data-active={index === active}
+              className={cn('flex flex-col pt-0 text-left', onlyActiveOnMobile(index))}
               role="tab"
               id={tabId(index)}
               aria-selected={index === active}
@@ -109,37 +116,51 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
               onClick={() => select(index)}
               onKeyDown={onTabKeyDown}
             >
-              <span className={styles.tabRule} />
-              <span className={styles.tabOrdinal}>{step.ordinal}</span>
-              <span className={styles.tabTitle}>{step.title}</span>
+              <span
+                className={cn(
+                  '-mt-px mb-5 h-0.5 bg-foreground transition-opacity duration-base ease-out',
+                  index === active ? 'opacity-100' : 'opacity-0',
+                )}
+              />
+              <span className="mb-1 text-caption text-muted-foreground">{step.ordinal}</span>
+              <span
+                className={cn(
+                  'text-title transition-colors duration-base ease-out',
+                  index === active ? 'text-foreground' : 'text-subtle-foreground',
+                )}
+              >
+                {step.title}
+              </span>
             </button>
           ))}
         </div>
 
-        <div className={`${styles.columns} ${styles.panels}`}>
+        <div className="mt-6 grid grid-cols-1 items-start gap-10 md:grid-cols-3">
           {HOW_IT_WORKS_STEPS.map((step, index) => (
             <div
               key={step.ordinal}
-              className={styles.panel}
-              data-active={index === active}
+              className={onlyActiveOnMobile(index)}
               role="tabpanel"
               id={panelId(index)}
               aria-labelledby={tabId(index)}
               // Deliberately not `hidden`: on desktop the inactive cell must
               // keep its grid column so the three columns stay aligned with
-              // the tabs above. The inner .panelBody is display:none instead,
+              // the tabs above. The inner body is display:none instead,
               // which also takes it out of the accessibility tree.
             >
-              <div className={styles.panelBody}>
-                <p className={styles.panelText}>{step.body}</p>
+              <div
+                className={cn(
+                  'flex-col items-start gap-6',
+                  index === active ? 'flex animate-fade-in' : 'hidden',
+                )}
+              >
+                <p className="text-body text-muted-foreground text-pretty">{step.body}</p>
                 {step.ctaHref ? (
-                  <ButtonLink href={step.ctaHref} variant="glass" size="md">
-                    {step.cta}
-                  </ButtonLink>
-                ) : (
-                  <Button variant="glass" size="md">
-                    {step.cta}
+                  <Button asChild variant="secondary">
+                    <Link href={step.ctaHref}>{step.cta}</Link>
                   </Button>
+                ) : (
+                  <Button variant="secondary">{step.cta}</Button>
                 )}
               </div>
             </div>
@@ -147,24 +168,31 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
         </div>
       </div>
 
-      <div className={styles.mobileNav}>
-        <button
-          className={styles.navButton}
+      <div className="pointer-events-none fixed inset-x-0 bottom-5 z-30 flex justify-center gap-3 md:hidden">
+        <Button
+          size="icon"
+          variant="secondary"
+          className="pointer-events-auto"
           onClick={previous}
-          aria-label="previous step"
+          aria-label="Previous step"
         >
-          ←
-        </button>
-        <span className={styles.navCounter} aria-hidden="true">
+          <ArrowLeft strokeWidth={1.5} />
+        </Button>
+        <span
+          className="flex items-center rounded-full bg-surface px-5 text-label text-foreground"
+          aria-hidden="true"
+        >
           {active + 1} / {STEP_COUNT}
         </span>
-        <button
-          className={styles.navButton}
+        <Button
+          size="icon"
+          variant="secondary"
+          className="pointer-events-auto"
           onClick={next}
-          aria-label="next step"
+          aria-label="Next step"
         >
-          →
-        </button>
+          <ArrowRight strokeWidth={1.5} />
+        </Button>
       </div>
     </section>
   );

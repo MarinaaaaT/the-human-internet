@@ -80,19 +80,30 @@ gate on the shared `signedPhotoUrlIfPublic` in `src/lib/photos/` rather than
 reimplementing the check, because a card is cached by every platform it is
 pasted into and a `Humans Only` leak there is far harder to walk back.
 
-## Colours
+## Design system
 
-Same three rules as the app: **backgrounds pure white** (`--bg-*`), **text not
-on a button pure black** (every `--text-*` tier is `#000`, kept as separate
-tokens so a hierarchy can come back in one line), and **every CTA except the
-App Store one is `#767676` on `#F6F6F6`** (`--cta-bg` / `--cta-fg`). The
-`glass`, `outline` and `ghost` button variants all render that now; `solid` is
-the App Store button and is exempt, as is `AppStoreBadge`. The second of a
-primary/secondary pair is `variant="secondary"`: `#767676` label and outline on
-white. `variant="tertiary"` is white on `#E0E0E0`, **only for a button standing
-alone on a non-white background** — nothing on the site uses it yet. The one
-exception is `--bg-hero`, which stays the photo's own top-edge grey so the
-hero image meets the page without a seam.
+The look is the shared design system (the kit), not anything local to this
+repo: **`DESIGN.md`** for intent, **`AGENTS.md`** for the hard rules, and
+**`design-system/tokens.json`** as the one source of values for web, iOS and
+Android. Styling is **Tailwind v4 + shadcn/ui** (`src/components/ui`) and the
+brand components in `src/components/brand`; `/styleguide` shows every token
+and component. Never hand-edit `src/styles/tokens.css` or `tokens.ts` — change
+`tokens.json` and run `npm run tokens`. That script is `--web-only`:
+`node design-system/build.mjs` without it also writes `DesignTokens.swift`
+and `DesignTokens.kt` into the sibling iOS and Android checkouts
+(`design-system/targets.json`), so run that only as part of setting those up.
+
+The rules most likely to be broken by habit: one font weight (500 — no
+bold, emphasis is black against muted grey); buttons are pills, primary
+black (at most one per screen), secondary grey, tertiary text-only; cards
+are flat `bg-surface` with no border or shadow; motion is opacity only;
+"verified" is always the spiral (`VerifiedMark`), never a check; sentence
+case everywhere except the wordmark. These replaced the earlier grey-CTA /
+all-black-text rules.
+
+`cn()` (`src/lib/utils.ts`) must be told about every custom type and size
+token. Out of the box it reads `text-label` as a colour and drops it when a
+`text-foreground` follows.
 
 ## Feature flags and fonts
 
@@ -116,7 +127,10 @@ public. The route downloads with the anon key, and the bucket's storage policy
 (`can_read_licensed_fonts()`) refuses anon unless the flag is `all` — so the
 route 404s and the page falls back to Inter Display whatever the client asks
 for. Don't set `all` until a commercial licence is bought. The Open Graph card
-(`opengraph-image.tsx`) still uses Satori's default font.
+(`opengraph-image.tsx`) still uses Satori's default font, and takes its
+colours from the generated `src/styles/tokens.ts` (Satori can't read CSS
+variables). Only Inter Display **Medium** is loaded — the design system has
+one weight — though the other cuts stay in `src/fonts` alongside the app's.
 
 ## Anonymous access is narrower than it looks
 

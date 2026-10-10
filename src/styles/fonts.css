@@ -1,13 +1,19 @@
 /**
- * Type families. Inter Display is the default everywhere; the html element
- * carries data-font="neue" while the `neue_font` flag is on for everyone
- * (read server-side in src/app/layout.tsx).
+ * Type family. Inter Display Medium is the default everywhere; the html
+ * element carries data-font="neue" while the `neue_font` flag is on for
+ * everyone (read server-side in src/app/layout.tsx), and the stack then
+ * leads with PP Neue Montreal.
  *
  * PP Neue Montreal is served by /fonts/neue/[file], which 404s unless the
  * database lets it through — so if this selector is ever forced on without
- * the flag, the faces below fail to load and the stack falls back to Inter
- * Display. The free set has no Medium or Bold: 100–500 use Regular, 600–900
- * use Semibold, the same mapping as the app's `FontFamily`.
+ * the flag, the face below fails to load and the stack falls back to Inter
+ * Display. The design system uses one weight (500); the free Neue set has no
+ * Medium, so 100–500 map to its Regular — the same mapping as the app's
+ * `FontFamily`. Semibold is kept for the 600–900 range so a stray bold never
+ * gets synthesised, even though nothing should ask for it.
+ *
+ * Tailwind's `font-sans` (globals.css) reads --font-brand, so every text-*
+ * style switches family together.
  */
 
 @font-face {
@@ -25,11 +31,9 @@
 }
 
 :root {
-  --font-display: var(--font-inter-display), system-ui, sans-serif;
-  --font-body: var(--font-inter-display), system-ui, sans-serif;
+  --font-brand: var(--font-inter-display), ui-sans-serif, system-ui, sans-serif;
 }
 
 :root[data-font='neue'] {
-  --font-display: 'PP Neue Montreal', var(--font-inter-display), system-ui, sans-serif;
-  --font-body: 'PP Neue Montreal', var(--font-inter-display), system-ui, sans-serif;
+  --font-brand: 'PP Neue Montreal', var(--font-inter-display), ui-sans-serif, system-ui, sans-serif;
 }

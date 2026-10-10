@@ -1,81 +1,151 @@
-@import './tokens.css';
-@import './fonts.css';
+/* ==========================================================================
+   The Human Internet: global styles (Tailwind v4 + shadcn/ui)
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+   Token VALUES live in ./tokens.css, which is GENERATED from
+   design-system/tokens.json by `npm run tokens`. Don't edit it.
+   This file only maps those tokens to Tailwind utilities and sets base styles.
+
+   Rule: components never use raw hex/px values. Use the utilities below
+   (bg-surface, text-muted-foreground, rounded-lg, text-h1, duration-base…).
+   ========================================================================== */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "./tokens.css";
+@import "./fonts.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* colors (shadcn/ui names + brand extras) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--background);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--surface);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--surface);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-accent: var(--surface-hover);            /* shadcn hover fill, NOT a brand color */
+  --color-accent-foreground: var(--foreground);
+  --color-highlight: var(--highlight);             /* badges only */
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--ring);
+
+  /* type: one weight (Medium); hierarchy = size + color. The family is
+     Inter Display, or PP Neue Montreal behind the neue_font flag — see
+     fonts.css. */
+  --font-sans: var(--font-brand);
+  /* Each family on its own, for the styleguide's side-by-side type specimen.
+     `font-neue` is still gated: its files 404 unless neue_font is on. */
+  --font-inter: var(--font-inter-display), ui-sans-serif, system-ui, sans-serif;
+  --font-neue: "PP Neue Montreal", var(--font-inter-display), ui-sans-serif, system-ui, sans-serif;
+  --font-weight-medium: var(--ds-font-weight);
+  --text-display: var(--ds-text-display); --text-display--line-height: var(--ds-text-display-lh); --text-display--letter-spacing: var(--ds-text-display-ls);
+  --text-h1: var(--ds-text-h1);           --text-h1--line-height: var(--ds-text-h1-lh);           --text-h1--letter-spacing: var(--ds-text-h1-ls);
+  --text-h2: var(--ds-text-h2);           --text-h2--line-height: var(--ds-text-h2-lh);           --text-h2--letter-spacing: var(--ds-text-h2-ls);
+  --text-h3: var(--ds-text-h3);           --text-h3--line-height: var(--ds-text-h3-lh);           --text-h3--letter-spacing: var(--ds-text-h3-ls);
+  --text-title: var(--ds-text-title);     --text-title--line-height: var(--ds-text-title-lh);     --text-title--letter-spacing: var(--ds-text-title-ls);
+  --text-body: var(--ds-text-body);       --text-body--line-height: var(--ds-text-body-lh);       --text-body--letter-spacing: var(--ds-text-body-ls);
+  --text-label: var(--ds-text-label);     --text-label--line-height: var(--ds-text-label-lh);     --text-label--letter-spacing: var(--ds-text-label-ls);
+  --text-caption: var(--ds-text-caption); --text-caption--line-height: var(--ds-text-caption-lh); --text-caption--letter-spacing: var(--ds-text-caption-ls);
+
+  /* shape */
+  --radius: var(--ds-radius-md);
+  --radius-sm: var(--ds-radius-sm);
+  --radius-md: var(--ds-radius-md);
+  --radius-lg: var(--ds-radius-lg);
+  --radius-xl: var(--ds-radius-xl);
+  --radius-2xl: var(--ds-radius-2xl);
+
+  /* size */
+  --spacing-control: var(--ds-size-control-height);
+  --spacing-icon-button: var(--ds-size-icon-button);
+  --spacing-touch: var(--ds-size-min-touch);
+  --spacing-icon: var(--ds-size-icon);
+  --spacing-thumbnail: var(--ds-size-thumbnail);
+
+  /* elevation: floating layers only */
+  --shadow-float: var(--ds-shadow-float);
+
+  /* motion */
+  --ease-out: var(--ds-ease-out);
+  --ease-in-out: var(--ds-ease-in-out);
+  --animate-reveal: reveal var(--ds-duration-slow) var(--ds-ease-out) both;
+  --animate-fade-in: reveal var(--ds-duration-base) var(--ds-ease-out) both;
+
+  @keyframes reveal {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
 }
 
-html {
-  scroll-behavior: smooth;
+@utility duration-fast { transition-duration: var(--ds-duration-fast); }
+@utility duration-base { transition-duration: var(--ds-duration-base); }
+@utility duration-slow { transition-duration: var(--ds-duration-slow); }
+
+/* Brand reveal: the nth element in a sequence waits n staggers. */
+@utility reveal-delay-* {
+  animation-delay: calc(var(--ds-duration-stagger) * --value(integer));
+}
+
+/* The logo files, as masks: they take the colour of the text around them
+   (bg-current), so one file serves black-on-white and white-on-photo. */
+@utility mask-mark {
+  mask: url("/brand/mark.svg") center / contain no-repeat;
+  aspect-ratio: 1402 / 1482;
+}
+@utility mask-wordmark {
+  mask: url("/brand/wordmark.svg") center / contain no-repeat;
+  aspect-ratio: 2324 / 185;
+}
+
+/* Legibility for white text set directly on a photo (ProofCard's status
+   line). Value from the kit's styleguide preview; it isn't elevation, so
+   it isn't `shadow-float`. */
+@utility text-shadow-photo { text-shadow: 0 1px 12px rgb(0 0 0 / 0.35); }
+
+/* Content column widths from DESIGN.md → Layout. */
+@utility max-w-marketing { max-width: 1200px; }
+@utility max-w-app { max-width: 440px; }
+
+@layer base {
+  * { border-color: var(--border); }
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-weight: var(--ds-font-weight);
+    font-optical-sizing: auto;
+  }
+  /* One weight, everywhere: emphasis is colour, never bold. */
+  b, strong, th, h1, h2, h3, h4, h5, h6 { font-weight: inherit; }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-body {
-  margin: 0;
-  background: var(--bg-page);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  color: var(--text-primary);
-  text-decoration: none;
-}
-
-a:hover {
-  color: var(--text-primary);
-}
-
-/* Keyboard users get a visible ring; pointer users don't. */
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-h1,
-h2,
-h3,
-h4,
-p {
-  margin: 0;
-}
-
-img,
-svg {
-  display: block;
-  max-width: 100%;
-}
-
-button {
-  font: inherit;
-}
-
-/* Visually hidden but available to screen readers. */
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
