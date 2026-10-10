@@ -1,5 +1,7 @@
 import { getSupabaseClient } from '@/lib/supabase/server';
 
+import { isPhotoIdShape } from './photoIdShape';
+
 /**
  * Lookup and privacy gate for the signed-out verification photo, shared by
  * the `/[photoId]` page and its Open Graph card so the two can't drift.
@@ -17,13 +19,6 @@ import { getSupabaseClient } from '@/lib/supabase/server';
 
 /** Signed URL lifetime, in seconds. Only needs to outlive the initial render. */
 export const SIGNED_URL_TTL_SECONDS = 60;
-
-const UUID_SHAPE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-// Base58 (Bitcoin alphabet: no 0/O/I/l), matches `photos.short_code` and the
-// app's `VerifiedPhoto.generateShortCode()`.
-const SHORT_CODE_SHAPE = /^[123456789A-HJ-NP-Za-km-z]{8}$/;
 
 export interface VerificationPhoto {
   storage_path: string | null;
@@ -64,7 +59,7 @@ export interface VerificationPhoto {
 export async function getVerificationPhoto(
   photoId: string,
 ): Promise<VerificationPhoto | null> {
-  if (!UUID_SHAPE.test(photoId) && !SHORT_CODE_SHAPE.test(photoId)) {
+  if (!isPhotoIdShape(photoId)) {
     return null;
   }
 
