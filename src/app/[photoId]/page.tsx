@@ -32,7 +32,11 @@ export async function generateMetadata({
   const photo = await getVerificationPhoto(photoId);
 
   if (!photo) {
-    return { title: 'photo not found', openGraph: { title: 'photo not found' } };
+    return {
+      title: 'photo not found',
+      openGraph: { title: 'photo not found' },
+      robots: { index: false },
+    };
   }
 
   const title = photo.is_public
@@ -49,10 +53,15 @@ export async function generateMetadata({
   // `openGraph.images` is deliberately *not* set — the sibling
   // `opengraph-image` route supplies it by file convention, and a value
   // here would override that. It applies its own privacy gate.
+  //
+  // `noindex`: these pages unfurl wherever a link is pasted, but can carry
+  // an owner's verified name and handles, so they stay out of search
+  // results. robots.ts leaves them crawlable so this tag can be seen.
   return {
     title,
     description,
     openGraph: { title, description },
+    robots: { index: false },
   };
 }
 
