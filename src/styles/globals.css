@@ -121,6 +121,23 @@
 @utility max-w-marketing { max-width: 1200px; }
 @utility max-w-app { max-width: 440px; }
 
+/* The homepage hero's fan of cards (HeroCards). `hero-fan-area` is the
+   space left under the headline; `hero-fan` is as wide as fits both its
+   width and its height, given that the centre card (36% of the fan's width,
+   4:5) shows only its top three quarters: 0.36 × 1.25 × 0.75 = 0.3375, so
+   the height allows 1 / 0.3375 ≈ 296% of itself in width. */
+@utility hero-fan-area { container-type: size; }
+@utility hero-fan { width: min(100cqw, 296cqh); }
+/* Phones: let the fan run past the screen edges, so the centre card fills
+   most of the width and the side cards peek in. */
+@utility hero-fan-bleed { width: min(200cqw, 296cqh); }
+
+/* The two-line "Download on / the App Store" badge in the hero, sized to
+   the mockup. Deliberately below the type scale (caption is 12px): it's
+   badge artwork, not running text. Used on a plain element, not through
+   cn(), which would read it as a colour. */
+@utility text-badge { font-size: 0.5625rem; line-height: 1.15; }
+
 @layer base {
   * { border-color: var(--border); }
   html {

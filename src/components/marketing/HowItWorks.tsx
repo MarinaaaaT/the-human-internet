@@ -29,6 +29,22 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
   // Any manual selection cancels auto-advance for the rest of the session.
   const [interacted, setInteracted] = useState(false);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  // The mobile pager is fixed to the viewport, so it only belongs on screen
+  // while this section is — not over the hero above or the footer below.
+  const sectionRef = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      // Only once the section fills the lower part of the screen, so the
+      // pager doesn't appear over the hero's last few pixels.
+      rootMargin: '0px 0px -40% 0px',
+    });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   const select = useCallback((index: number) => {
     setInteracted(true);
@@ -67,7 +83,7 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
     index === active ? undefined : 'max-md:hidden';
 
   return (
-    <section className="bg-background text-foreground" id="how">
+    <section ref={sectionRef} className="bg-background text-foreground" id="how">
       <div className="mx-auto max-w-marketing px-6 pt-16 pb-32 md:px-10 md:pt-24 md:pb-24">
         <div
           className="mb-12 grid grid-cols-1 items-end justify-items-center gap-6 md:mb-24 md:grid-cols-3"
@@ -168,7 +184,16 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
         </div>
       </div>
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-5 z-30 flex justify-center gap-3 md:hidden">
+      <div
+        className={cn(
+          'pointer-events-none fixed inset-x-0 bottom-5 z-30 flex justify-center gap-3 transition-opacity duration-base ease-out md:hidden',
+          inView ? 'opacity-100' : 'opacity-0',
+        )}
+        // Out of the tab order and the a11y tree while it's invisible, as
+        // the site header does.
+        aria-hidden={!inView}
+        inert={!inView}
+      >
         <Button
           size="icon"
           variant="secondary"

@@ -20,7 +20,7 @@ colors:
 typography:
   display:
     fontFamily: PP Neue Montreal
-    fontSize: 6rem
+    fontSize: 5rem
     fontWeight: 500
     lineHeight: 0.95
     letterSpacing: -0.045em
