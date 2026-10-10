@@ -33,7 +33,7 @@
   --ring: #000000; /* Focus ring */
 
   /* type scale (web) */
-  --ds-text-display: 6rem;
+  --ds-text-display: 5rem;
   --ds-text-display-lh: 0.95;
   --ds-text-display-ls: -0.045em;
   --ds-text-h1: 3.5rem;

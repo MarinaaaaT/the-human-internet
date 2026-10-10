@@ -31,6 +31,11 @@ export interface ProofCardProps {
    * this layer is hidden from screen readers.
    */
   reveal?: ReactNode;
+  /**
+   * Shows the reveal without a hover or tap — for a page that demonstrates
+   * it on its own (the homepage hero). Hover and tap still work as usual.
+   */
+  revealed?: boolean;
   /** Info card below the photo: label/value metadata. */
   info?: ReactNode;
   /** Card beside `info`: share / copy link (see ShareActions). */
@@ -42,7 +47,9 @@ export interface ProofCardProps {
  * A verified photo with the signature frosted reveal: hover (pointer) or tap
  * (touch, toggles) crossfades to a blurred, white-washed copy with the proof
  * on top. Opacity only, `duration-base` both ways — the blur itself never
- * animates, a pre-blurred layer fades in over the sharp one.
+ * animates, a pre-blurred layer fades in over the sharp one. The white wash
+ * is a radial fade: the blurred photo stays strong in the middle and goes
+ * to white at the edges, where the proof text sits.
  */
 export function ProofCard({
   src,
@@ -55,6 +62,7 @@ export function ProofCard({
   fit = 'natural',
   status,
   reveal,
+  revealed = false,
   info,
   actions,
   className,
@@ -67,7 +75,7 @@ export function ProofCard({
     <div className={cn('flex flex-col gap-4', className)}>
       <button
         type="button"
-        data-on={on}
+        data-on={on || revealed}
         aria-pressed={on}
         aria-label={`${alt}. Show proof details.`}
         onClick={() => setOn((value) => !value)}
@@ -94,14 +102,14 @@ export function ProofCard({
           sizes={sizes}
           unoptimized={unoptimized}
           className={cn(
-            'absolute inset-0 size-full scale-110 object-cover blur-xl opacity-0 transition-opacity duration-base ease-out',
+            'absolute inset-0 size-full scale-110 object-cover blur-md opacity-0 transition-opacity duration-base ease-out',
             shown,
           )}
         />
         <div
           aria-hidden="true"
           className={cn(
-            'absolute inset-0 flex flex-col gap-1 bg-background/55 p-5 text-title text-foreground opacity-0 transition-opacity duration-base ease-out',
+            'absolute inset-0 flex flex-col gap-1 bg-radial from-transparent from-30% via-background/40 via-60% to-background/90 to-85% p-5 text-title text-foreground opacity-0 transition-opacity duration-base ease-out',
             shown,
           )}
         >
