@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
+import { SiteAnalytics } from '@/components/SiteAnalytics';
 import { isPublicFlagEnabled } from '@/lib/featureFlags';
 import { SITE_URL } from '@/lib/site';
 
@@ -52,7 +53,10 @@ export default async function RootLayout({
       className={interDisplay.variable}
       data-font={neueFont ? 'neue' : undefined}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <SiteAnalytics />
+      </body>
     </html>
   );
 }
