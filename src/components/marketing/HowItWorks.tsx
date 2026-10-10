@@ -84,11 +84,15 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
 
   return (
     <section ref={sectionRef} className="bg-background text-foreground" id="how">
-      <div className="mx-auto max-w-marketing px-6 pt-16 pb-32 md:px-10 md:pt-24 md:pb-24">
-        <div
-          className="mb-12 grid grid-cols-1 items-end justify-items-center gap-6 md:mb-24 md:grid-cols-3"
-          {...swipeHandlers}
-        >
+      {/* Swipes (touch, or sideways on a trackpad) anywhere in the section
+          move the highlight to the next or previous step; on desktop all
+          three stay where they are. `touch-pan-y` keeps vertical scrolling
+          native. */}
+      <div
+        className="mx-auto max-w-marketing touch-pan-y px-6 pt-16 pb-32 md:px-10 md:pt-24 md:pb-24"
+        {...swipeHandlers}
+      >
+        <div className="mb-12 grid grid-cols-1 items-end justify-items-center gap-6 md:mb-24 md:grid-cols-3">
           {HOW_IT_WORKS_STEPS.map((step, index) => (
             <button
               key={step.ordinal}

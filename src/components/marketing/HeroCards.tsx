@@ -13,6 +13,7 @@ import { VerifiedMark } from '@/components/brand/VerifiedMark';
 import { AppleLogo } from '@/components/icons/AppleLogo';
 import { Button } from '@/components/ui/button';
 import { APP_STORE_URL, ROUTES } from '@/content/site';
+import { useSwipe } from '@/hooks/useSwipe';
 import { cn } from '@/lib/utils';
 
 import candle from '@/../public/images/hero/candle.jpg';
@@ -21,6 +22,19 @@ import tile from '@/../public/images/hero/tile.jpg';
 
 /** How long the demo holds each state, matching the brand scroller. */
 const DEMO_STEP_MS = 3000;
+
+/**
+ * Where each slot of the fan sits: left, centre, right. The side cards sit
+ * behind the centre one, a little smaller and lower, tilted out.
+ */
+const SLOTS = [
+  'top-1/10 left-0 w-8/25 -rotate-14',
+  'top-0 left-8/25 z-10 w-9/25',
+  'top-1/10 right-0 w-8/25 rotate-14',
+] as const;
+
+/** The slot the demo reveals on its own: the right, as in the scroller. */
+const DEMO_SLOT = 2;
 
 interface HeroCard {
   image: StaticImageData;
@@ -32,7 +46,6 @@ interface HeroCard {
   os: string;
   place: string;
   coords: string;
-  className: string;
 }
 
 // Example capture details for the illustration — not real photo metadata.
@@ -46,8 +59,6 @@ const CARDS: HeroCard[] = [
     os: 'iOS 19.0',
     place: 'Brooklyn, NY',
     coords: '40.6782° N, 73.9442° W',
-    // Behind the centre card, a little smaller and lower, tilted out.
-    className: 'top-1/10 left-0 w-8/25 -rotate-14',
   },
   {
     image: phone,
@@ -58,7 +69,6 @@ const CARDS: HeroCard[] = [
     os: 'iOS 19.0',
     place: 'Los Angeles, CA',
     coords: '34.0522° N, 118.2437° W',
-    className: 'top-0 left-8/25 z-10 w-9/25',
   },
   {
     image: tile,
@@ -69,12 +79,8 @@ const CARDS: HeroCard[] = [
     os: 'iOS 19.0.1',
     place: 'San Francisco, CA',
     coords: '37.7749° N, 122.4194° W',
-    className: 'top-1/10 right-0 w-8/25 rotate-14',
   },
 ];
-
-/** The card the demo reveals on its own: the last one, as in the scroller. */
-const DEMO_CARD = CARDS.length - 1;
 
 function Reveal({ card }: { card: HeroCard }): ReactNode {
   return (
@@ -101,6 +107,19 @@ function Reveal({ card }: { card: HeroCard }): ReactNode {
 export function HeroCards({ className }: { className?: string }) {
   const [demoOn, setDemoOn] = useState(false);
   const [interacting, setInteracting] = useState(false);
+  // Which way round the fan is: card `i` sits in slot `(i + offset) % 3`,
+  // so the cards start in the order they're listed. A swipe turns it.
+  const [offset, setOffset] = useState(0);
+  const turn = (step: number) => {
+    setDemoOn(false);
+    setOffset((value) => (value + step + CARDS.length) % CARDS.length);
+  };
+  // Swiping left (touch or trackpad) brings the right-hand card to the
+  // centre.
+  const swipe = useSwipe(
+    () => turn(-1),
+    () => turn(1),
+  );
 
   useEffect(() => {
     if (interacting) return;
@@ -114,7 +133,10 @@ export function HeroCards({ className }: { className?: string }) {
       // `hero-fan` (globals.css) sizes this box to fit the space it's given;
       // the cards are placed in percentages of it, so the whole fan scales
       // as one. 20:9 is the centre card's height (36% wide × 5/4).
-      className={cn('hero-fan aspect-20/9 max-sm:hero-fan-bleed', className)}
+      // `touch-pan-y` keeps vertical scrolling native while horizontal
+      // drags come to us as swipes.
+      className={cn('hero-fan aspect-20/9 touch-pan-y max-sm:hero-fan-bleed', className)}
+      {...swipe}
       onPointerEnter={() => {
         setInteracting(true);
         setDemoOn(false);
@@ -126,21 +148,26 @@ export function HeroCards({ className }: { className?: string }) {
       }}
       onBlur={() => setInteracting(false)}
     >
-      {CARDS.map((card, index) => (
-        <ProofCard
-          key={card.alt}
-          className={cn('absolute', card.className)}
-          src={card.image.src}
-          width={card.image.width}
-          height={card.image.height}
-          alt={card.alt}
-          fit="portrait"
-          sizes="(min-width: 768px) 440px, 40vw"
-          priority
-          revealed={index === DEMO_CARD && demoOn}
-          reveal={<Reveal card={card} />}
-        />
-      ))}
+      {CARDS.map((card, index) => {
+        const slot = (index + offset) % CARDS.length;
+        return (
+          <ProofCard
+            // Keyed by slot too, so a turn remounts each card and it fades in
+            // at its new place: motion is opacity only, so they don't slide.
+            key={`${card.alt}-${slot}`}
+            className={cn('absolute animate-fade-in', SLOTS[slot])}
+            src={card.image.src}
+            width={card.image.width}
+            height={card.image.height}
+            alt={card.alt}
+            fit="portrait"
+            sizes="(min-width: 768px) 440px, 40vw"
+            priority
+            revealed={slot === DEMO_SLOT && demoOn}
+            reveal={<Reveal card={card} />}
+          />
+        );
+      })}
 
       {/* The app's CTA, set on the phone screen in the centre card (57% of
           the way down it, centred). A sibling of the cards rather than
