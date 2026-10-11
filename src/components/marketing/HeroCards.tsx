@@ -45,7 +45,6 @@ interface HeroCard {
   time: string;
   os: string;
   place: string;
-  coords: string;
 }
 
 // Example capture details for the illustration — not real photo metadata.
@@ -58,7 +57,6 @@ const CARDS: HeroCard[] = [
     time: '9:18 AM',
     os: 'iOS 19.0',
     place: 'Brooklyn, NY',
-    coords: '40.6782° N, 73.9442° W',
   },
   {
     image: phone,
@@ -68,7 +66,6 @@ const CARDS: HeroCard[] = [
     time: '6:05 PM',
     os: 'iOS 19.0',
     place: 'Los Angeles, CA',
-    coords: '34.0522° N, 118.2437° W',
   },
   {
     image: tile,
@@ -78,7 +75,6 @@ const CARDS: HeroCard[] = [
     time: '3:42 PM',
     os: 'iOS 19.0.1',
     place: 'San Francisco, CA',
-    coords: '37.7749° N, 122.4194° W',
   },
 ];
 
@@ -91,10 +87,7 @@ function Reveal({ card }: { card: HeroCard }): ReactNode {
         {card.date} <span className="text-caption text-muted-foreground">{card.time}</span>
       </span>
       <span>{card.os}</span>
-      <span>
-        {card.place}{' '}
-        <span className="hidden text-caption text-muted-foreground md:inline">{card.coords}</span>
-      </span>
+      <span>{card.place}</span>
     </div>
   );
 }
