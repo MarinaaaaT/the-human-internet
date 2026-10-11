@@ -142,6 +142,7 @@ export default async function VerificationPage({ params }: PageProps) {
                   </div>
                 }
                 actions={<ShareActions />}
+                downloadHref={`/${photoId}/download`}
               />
 
               {hasOwnerDetails && (
