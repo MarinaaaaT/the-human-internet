@@ -321,6 +321,7 @@ export default async function StyleguidePage() {
                   </p>
                 }
                 actions={<ShareActions url="https://the-human-internet.com" />}
+                downloadHref="/styleguide/photo.jpg"
               />
             </div>
 

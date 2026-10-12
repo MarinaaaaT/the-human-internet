@@ -87,9 +87,13 @@ export async function getVerificationPhoto(
  *
  * Returns `null` for a gated photo *and* for a failed signing call, so
  * callers have one "no image to show" case to handle rather than two.
+ *
+ * `download` names the file and makes Storage serve it as an attachment —
+ * the `/[photoId]/download` route, which re-runs this gate per click.
  */
 export async function signedPhotoUrlIfPublic(
   photo: VerificationPhoto,
+  { download }: { download?: string } = {},
 ): Promise<string | null> {
   if (!photo.is_public || !photo.storage_path) {
     return null;
@@ -98,7 +102,7 @@ export async function signedPhotoUrlIfPublic(
   const supabase = getSupabaseClient();
   const { data, error } = await supabase.storage
     .from('photos')
-    .createSignedUrl(photo.storage_path, SIGNED_URL_TTL_SECONDS);
+    .createSignedUrl(photo.storage_path, SIGNED_URL_TTL_SECONDS, { download });
 
   if (error) {
     console.error('createSignedUrl failed:', error.message);
