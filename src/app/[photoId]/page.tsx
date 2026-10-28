@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { APP_STORE_URL, ROUTES, SITE_NAME } from '@/content/site';
 import { parseSocialLinks } from '@/lib/photos/socialLinks';
 import {
+  DEMO_DISCLAIMER,
   formatCapturedAt,
   getVerificationPhoto,
   signedPhotoUrlIfPublic,
@@ -39,10 +40,14 @@ export async function generateMetadata({
     };
   }
 
-  const title = photo.is_public
-    ? `verified by @${photo.username}`
-    : 'verified human photo';
-  const description = 'This photo was taken by a real human — verified.';
+  const title = photo.is_demo
+    ? 'demo account photo'
+    : photo.is_public
+      ? `verified by @${photo.username}`
+      : 'verified human photo';
+  const description = photo.is_demo
+    ? DEMO_DISCLAIMER
+    : 'This photo was taken by a real human — verified.';
 
   // `openGraph` has to restate the title and description rather than
   // inheriting them from the fields above: the root layout declares its own
@@ -98,11 +103,19 @@ export default async function VerificationPage({ params }: PageProps) {
       <main className="min-h-svh pt-24 pb-24">
         <div className="mx-auto flex max-w-app flex-col gap-4 px-6">
           <div className="flex items-center gap-3 rounded-md bg-surface p-4">
-            <VerifiedMark className="h-7" />
-            <p className="text-title text-foreground">
-              This photo was taken by a real
-              {showPhoto ? ', verified' : ''} human!
-            </p>
+            {photo.is_demo ? (
+              /* No spiral: it means verified, and this box says the
+                 opposite. */
+              <p className="text-title text-foreground">{DEMO_DISCLAIMER}</p>
+            ) : (
+              <>
+                <VerifiedMark className="h-7" />
+                <p className="text-title text-foreground">
+                  This photo was taken by a real
+                  {showPhoto ? ', verified' : ''} human!
+                </p>
+              </>
+            )}
           </div>
 
           <p className="mb-4 text-label text-muted-foreground">

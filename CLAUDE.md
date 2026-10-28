@@ -68,6 +68,15 @@ constraint in another repo. Its `SOCIAL_PLATFORMS` table mirrors
 platform missing here is simply not rendered, which is the right failure
 direction.
 
+**Demo photos make no claim.** The app's shared demo account
+(`thehumaninternet://demo`) can be "verified" without Stripe, so the RPC
+returns `is_demo` (from `users.is_demo`, which only the service role writes;
+ungated by privacy, since it only ever says less) and the page replaces its
+"taken by a real human" box with `DEMO_DISCLAIMER` — "This photo was taken on
+a demo account so human authenticity is not guaranteed." — and no spiral. The
+metadata and the Open Graph card drop the claim the same way. The app prints
+the same sentence (`DemoAccount.verificationDisclaimer`).
+
 It also owns the **Open Graph card** every shared link unfurls into
 (`opengraph-image.tsx`), which is what a verification link looks like on
 Facebook, Messages, X, Reddit or Slack — so that file, not the app, is where
