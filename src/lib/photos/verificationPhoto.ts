@@ -54,7 +54,23 @@ export interface VerificationPhoto {
    * module is where the shape check and the href construction live.
    */
   social_links: unknown;
+  /**
+   * Taken on the shared demo account (`users.is_demo`, opened in the app by
+   * `thehumaninternet://demo`). Only the service role can write it. Demo
+   * photos can be "verified" without Stripe, so the page and card print
+   * `DEMO_DISCLAIMER` instead of claiming a real human. Ungated by privacy:
+   * it says less about a photo, never more. Optional only so a database
+   * whose RPC predates it reads as not a demo.
+   */
+  is_demo?: boolean;
 }
+
+/**
+ * Replaces "This photo was taken by a real human" for a demo photo. The app
+ * says the same thing (`DemoAccount.verificationDisclaimer`).
+ */
+export const DEMO_DISCLAIMER =
+  'This photo was taken on a demo account so human authenticity is not guaranteed.';
 
 export async function getVerificationPhoto(
   photoId: string,

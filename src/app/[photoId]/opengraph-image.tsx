@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { ImageResponse } from 'next/og';
 
 import {
+  DEMO_DISCLAIMER,
   formatCapturedAt,
   getVerificationPhoto,
   signedPhotoUrlIfPublic,
@@ -27,6 +28,10 @@ import { colors } from '@/styles/tokens';
  *    to add a second cache underneath that one.)
  * 2. The privacy gate is `signedPhotoUrlIfPublic`, shared with the page
  *    rather than reimplemented — see that function for why.
+ *
+ * A demo account's photo (`is_demo`) makes no claim: no spiral, and
+ * `DEMO_DISCLAIMER` where the verified claim would be. A card is cached by
+ * every platform it's pasted into, so it must not say more than the page.
  */
 
 export const dynamic = 'force-dynamic';
@@ -91,6 +96,8 @@ export default async function OpenGraphImage({
   // split card; a gated photo, a missing one, and a public one whose
   // signing call failed all get the wordmark card — none of them may
   // render pixels, and the copy below is written to be true of all three.
+  const isDemo = photo?.is_demo === true;
+
   if (!photo || !signedPhotoUrl) {
     return new ImageResponse(
       (
@@ -106,10 +113,10 @@ export default async function OpenGraphImage({
             padding: 80,
           }}
         >
-          <Mark size={96} />
+          {!isDemo && <Mark size={96} />}
           <div
             style={{
-              marginTop: 40,
+              marginTop: isDemo ? 0 : 40,
               fontSize: 64,
               fontWeight: 500,
               color: COLOR.foreground,
@@ -118,7 +125,7 @@ export default async function OpenGraphImage({
               letterSpacing: '-0.035em',
             }}
           >
-            A photo taken by a real human.
+            {isDemo ? 'A photo taken on a demo account.' : 'A photo taken by a real human.'}
           </div>
           <div
             style={{
@@ -128,9 +135,11 @@ export default async function OpenGraphImage({
               textAlign: 'center',
             }}
           >
-            {photo
-              ? 'This human shares their photos with other humans only.'
-              : 'Proof that real people are behind the content they create.'}
+            {isDemo
+              ? 'Human authenticity is not guaranteed.'
+              : photo
+                ? 'This human shares their photos with other humans only.'
+                : 'Proof that real people are behind the content they create.'}
           </div>
           <div style={{ marginTop: 48, fontSize: 26, color: COLOR.foreground }}>
             the-human-internet.com
@@ -176,29 +185,30 @@ export default async function OpenGraphImage({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Mark size={34} />
+            {!isDemo && <Mark size={34} />}
             <div
               style={{
-                marginLeft: 12,
+                marginLeft: isDemo ? 0 : 12,
                 fontSize: 24,
                 color: COLOR.muted,
               }}
             >
-              Verified human
+              {isDemo ? 'Demo account' : 'Verified human'}
             </div>
           </div>
 
           <div
             style={{
               marginTop: 28,
-              fontSize: 52,
+              // The disclaimer is twice the length of the claim.
+              fontSize: isDemo ? 44 : 52,
               fontWeight: 500,
               lineHeight: 1,
               letterSpacing: '-0.035em',
               color: COLOR.foreground,
             }}
           >
-            This photo was taken by a real, verified human.
+            {isDemo ? DEMO_DISCLAIMER : 'This photo was taken by a real, verified human.'}
           </div>
 
           <div
