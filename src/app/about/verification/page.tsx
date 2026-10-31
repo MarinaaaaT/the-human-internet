@@ -240,10 +240,11 @@ export default function VerificationPage() {
 
         <Faq question="Why can’t I import photos from my camera roll?">
           <p>
-            Your iPhone&rsquo;s physical camera does create the signature we
-            need — but Apple&rsquo;s built-in Camera app doesn&rsquo;t expose it
-            to other apps, so we have no way to read or verify it after the
-            fact. That&rsquo;s why the photo has to be taken inside our app.
+            Apple doesn&rsquo;t share any proof that a photo in your camera roll
+            came straight off the camera. Once it&rsquo;s in your camera roll, we
+            can&rsquo;t tell it apart from an edited or AI-generated image.
+            Taking the photo inside our app is what lets us vouch for it from
+            the moment it&rsquo;s captured.
           </p>
           <p>
             If we build an Android app, we&rsquo;ll be able to support importing
