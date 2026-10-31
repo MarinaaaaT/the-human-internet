@@ -48,7 +48,7 @@ export const HOW_IT_WORKS_ANCHOR = '#how';
  */
 export const EXTERNAL_LINKS: Record<string, string | null> = {
   roadmap: 'https://thehumaninternet.featurebase.app/roadmap',
-  discord: 'https://discord.gg/SvB3BPFKDq',
+  discord: 'https://discord.gg/G6aAgEq2sU',
   feedback: 'https://thehumaninternet.featurebase.app/',
   introVideo: null,
 };
