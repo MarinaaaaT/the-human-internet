@@ -42,9 +42,14 @@ the bare name, because the name is still true and the sentence would not be.
 The name is re-cased for display by `titleCaseName`: these come off identity
 documents and arrive shouting (`JORDAN JAMES FAVA`), and only fully-uppercase
 values are touched, so a deliberately-cased `van der Berg` survives intact.
-The app mirrors all of this in `VerifiedIdentity`. It has to be: this page renders the name inches
-from "taken by a real, verified human", so a self-authored one would be a
-claim wearing our checkmark. Those columns are user-written, so they claim nothing by
+The app mirrors all of this in `VerifiedIdentity`. **The page no longer renders
+the name** (removed 2026-10-31): the RPC still returns `display_name` and
+`identity_verified_at`, and `titleCaseName` is kept for when it comes back.
+What the page states instead is the headline — *"taken by a real, identity
+verified human"* when `is_verified`, *"a real human"* otherwise — and since
+`is_verified` is withheld for a `Humans Only` owner, a gated photo always
+reads as the plain one. A name, if restored, sits inches from that claim, so a
+self-authored one would be a claim wearing our checkmark. Those columns are user-written, so they claim nothing by
 themselves — `get_verification_photo()` withholds every one of them unless the
 owner's `verification_status` is `verified` (a column no client can write),
 their privacy is `Public` (the same gate the username already passes), *and*

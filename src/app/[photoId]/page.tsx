@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { LabelValue } from '@/components/brand/LabelValue';
 import { ProofCard } from '@/components/brand/ProofCard';
 import { ShareActions } from '@/components/brand/ShareActions';
 import { VerifiedMark } from '@/components/brand/VerifiedMark';
@@ -15,7 +14,6 @@ import {
   formatCapturedAt,
   getVerificationPhoto,
   signedPhotoUrlIfPublic,
-  titleCaseName,
 } from '@/lib/photos/verificationPhoto';
 
 // Signed URLs are minted fresh per request — this route can't be statically
@@ -88,12 +86,11 @@ export default async function VerificationPage({ params }: PageProps) {
 
   const capturedDate = formatCapturedAt(photo.captured_at);
 
-  // What the owner chose to put on this page beyond the photo. Both are
-  // already gated in `get_verification_photo()` — unverified or Humans Only
-  // arrives as `null` and `[]` — so there is no privacy decision left to
-  // make here, only whether there is anything to draw.
+  // What the owner chose to put on this page beyond the photo. Already gated
+  // in `get_verification_photo()` — unverified or Humans Only arrives as
+  // `[]` — so there is no privacy decision left to make here, only whether
+  // there is anything to draw.
   const socialLinks = parseSocialLinks(photo.social_links);
-  const hasOwnerDetails = Boolean(photo.display_name) || socialLinks.length > 0;
 
   const showPhoto = photo.is_public && signedPhotoUrl;
 
@@ -110,9 +107,12 @@ export default async function VerificationPage({ params }: PageProps) {
             ) : (
               <>
                 <VerifiedMark className="h-7" />
+                {/* `is_verified` is Stripe Identity, gated in the RPC like
+                    the rest of the owner's details: a Humans Only photo
+                    arrives `false` and reads as a plain "real human". */}
                 <p className="text-title text-foreground">
                   This photo was taken by a real
-                  {showPhoto ? ', verified' : ''} human!
+                  {photo.is_verified ? ', identity verified' : ''} human!
                 </p>
               </>
             )}
@@ -132,7 +132,9 @@ export default async function VerificationPage({ params }: PageProps) {
             <>
               <ProofCard
                 src={signedPhotoUrl}
-                alt="Verified human-captured photo"
+                /* The reveal is hidden from screen readers and there is no
+                   info card, so the proof rides on the photo's label. */
+                alt={`Verified human-captured photo by @${photo.username}, captured ${capturedDate}`}
                 width={1200}
                 height={1200}
                 sizes="(max-width: 440px) 100vw, 440px"
@@ -144,77 +146,50 @@ export default async function VerificationPage({ params }: PageProps) {
                     <span>{capturedDate}</span>
                   </>
                 }
-                info={
-                  <div className="flex flex-col gap-3">
-                    <LabelValue label="Verified by" size="title">
-                      @{photo.username}
-                    </LabelValue>
-                    <LabelValue label="Captured" size="title">
-                      {capturedDate}
-                    </LabelValue>
-                  </div>
-                }
-                actions={<ShareActions />}
                 downloadHref={`/${photoId}/download`}
               />
 
-              {hasOwnerDetails && (
-                <section className="flex flex-col gap-3 border-t border-border pt-5">
-                  {photo.display_name &&
-                    (photo.identity_verified_at ? (
-                      /* `formatCapturedAt` is the page's one date format —
-                         see its doc — so the verification date reads the
-                         same as the capture date above it. */
-                      <p className="text-label text-muted-foreground">
-                        Identity Last Verified by Stripe on{' '}
-                        {formatCapturedAt(photo.identity_verified_at)} proving
-                        account owner is{' '}
-                        <strong className="text-foreground">
-                          {titleCaseName(photo.display_name)}
-                        </strong>
-                      </p>
-                    ) : (
-                      /* Verified before the date was recorded. The name is
-                         still true; the sentence would not be. */
-                      <p className="text-title text-foreground">
-                        {titleCaseName(photo.display_name)}
-                      </p>
-                    ))}
-                  {socialLinks.length > 0 && (
-                    <ul className="flex flex-wrap gap-2">
-                      {/* Keyed by position: nothing stops a user listing
-                          the same platform and handle twice. */}
-                      {socialLinks.map((link, index) => (
-                        <li key={`${index}-${link.platform}-${link.handle}`} className="max-w-full">
-                          {/*
-                            User-authored destinations: `ugc` and `nofollow`
-                            keep them out of our link graph, and
-                            `noopener noreferrer` is the usual new-tab
-                            hygiene. The href itself is built from a
-                            per-platform template in `socialLinks.ts`, never
-                            from stored text.
-                          */}
-                          <Button
-                            asChild
-                            variant="secondary"
-                            className="h-auto min-h-control max-w-full py-2 whitespace-normal"
+              <p className="text-label text-muted-foreground">
+                Click photo to see more information about the creator.
+              </p>
+
+              <ShareActions />
+
+              {socialLinks.length > 0 && (
+                <section className="border-t border-border pt-5">
+                  <ul className="flex flex-wrap gap-2">
+                    {/* Keyed by position: nothing stops a user listing
+                        the same platform and handle twice. */}
+                    {socialLinks.map((link, index) => (
+                      <li key={`${index}-${link.platform}-${link.handle}`} className="max-w-full">
+                        {/*
+                          User-authored destinations: `ugc` and `nofollow`
+                          keep them out of our link graph, and
+                          `noopener noreferrer` is the usual new-tab
+                          hygiene. The href itself is built from a
+                          per-platform template in `socialLinks.ts`, never
+                          from stored text.
+                        */}
+                        <Button
+                          asChild
+                          variant="secondary"
+                          className="h-auto min-h-control max-w-full py-2 whitespace-normal"
+                        >
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="ugc nofollow noopener noreferrer"
                           >
-                            <a
-                              href={link.href}
-                              target="_blank"
-                              rel="ugc nofollow noopener noreferrer"
-                            >
-                              <span className="text-muted-foreground">{link.label}</span>
-                              {/* Handles are capped at 64 characters and can be
-                                  a solid run of them, so this is the one place
-                                  on the page that can force a horizontal scroll. */}
-                              <span className="min-w-0 wrap-anywhere">{link.display}</span>
-                            </a>
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                            <span className="text-muted-foreground">{link.label}</span>
+                            {/* Handles are capped at 64 characters and can be
+                                a solid run of them, so this is the one place
+                                on the page that can force a horizontal scroll. */}
+                            <span className="min-w-0 wrap-anywhere">{link.display}</span>
+                          </a>
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
                 </section>
               )}
             </>
