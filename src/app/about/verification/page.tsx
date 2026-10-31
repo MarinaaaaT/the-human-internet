@@ -4,7 +4,9 @@ import Link from 'next/link';
 import { ContentPage } from '@/components/content/ContentPage';
 import { Callout, Faq, Prose } from '@/components/content/Prose';
 import {
+  APP_ATTEST_URL,
   CONTENT_AUTHENTICITY_URL,
+  FACE_ID_URL,
   ROUTES,
   SECTION_LINKS,
   VERIFICATION_SECTIONS,
@@ -43,16 +45,29 @@ export default function VerificationPage() {
             <em>(required)</em>
             <ul>
               <li>
-                Using app attestation, we check you are running a real version
-                of our app.
+                Using{' '}
+                <a href={APP_ATTEST_URL} target="_blank" rel="noreferrer noopener">
+                  app attestation
+                </a>
+                , we check you are running a real version of our app.
               </li>
               <li>
-                Using Sign in with Apple&rsquo;s biometrics (Face ID), we check
-                that you are a person using a physical phone.
+                Using{' '}
+                <a href={FACE_ID_URL} target="_blank" rel="noreferrer noopener">
+                  Apple&rsquo;s Face ID
+                </a>
+                , we check that you are a person using a physical phone.
               </li>
               <li>
-                Using C2PA, we check the photo came from the camera on your
-                phone.
+                Using{' '}
+                <a
+                  href={CONTENT_AUTHENTICITY_URL}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  content credentials
+                </a>
+                , we check the photo came from the camera on your phone.
               </li>
             </ul>
           </li>
