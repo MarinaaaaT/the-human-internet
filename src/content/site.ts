@@ -12,6 +12,7 @@ export const ROUTES = {
   home: '/',
   about: '/about',
   verification: '/about/verification',
+  privacyPolicy: '/about/privacy-policy',
 } as const;
 
 /**
@@ -22,11 +23,13 @@ export const ROUTES = {
 export const VERIFICATION_SECTIONS = {
   identity: 'identity',
   humanity: 'humanity',
+  privacy: 'privacy',
 } as const;
 
 export const SECTION_LINKS = {
   identity: `${ROUTES.verification}#${VERIFICATION_SECTIONS.identity}`,
   humanity: `${ROUTES.verification}#${VERIFICATION_SECTIONS.humanity}`,
+  privacy: `${ROUTES.verification}#${VERIFICATION_SECTIONS.privacy}`,
 } as const;
 
 export const NAV_LINKS: { label: string; href: string }[] = [
@@ -45,9 +48,12 @@ export const HOW_IT_WORKS_ANCHOR = '#how';
  */
 export const EXTERNAL_LINKS: Record<string, string | null> = {
   roadmap: 'https://thehumaninternet.featurebase.app/roadmap',
-  discord: 'https://discord.gg/SjYNad553',
+  discord: 'https://discord.gg/SvB3BPFKDq',
   feedback: 'https://thehumaninternet.featurebase.app/',
   introVideo: null,
 };
+
+export const STRIPE_PRIVACY_URL = 'https://stripe.com/privacy';
+export const STRIPE_PRIVACY_EMAIL = 'privacy@stripe.com';
 
 export const CONTENT_AUTHENTICITY_URL = 'https://contentauthenticity.org/';

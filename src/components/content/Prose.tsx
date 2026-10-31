@@ -22,6 +22,7 @@ export function Prose({ children }: { children: ReactNode }) {
         '[&_ul]:mb-5 [&_ul]:max-w-prose [&_ul]:list-disc [&_ul]:pl-6',
         '[&_ol]:mb-5 [&_ol]:max-w-prose [&_ol]:list-decimal [&_ol]:pl-6',
         '[&_li]:mb-3 [&_li]:pl-1 [&_li]:marker:text-subtle-foreground',
+        '[&_li>ul]:mt-3 [&_li>ul]:mb-0',
         '[&_strong]:text-foreground [&_em]:text-foreground',
         '[&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:transition-colors [&_a]:duration-fast [&_a]:ease-out [&_a:hover]:text-muted-foreground',
       ].join(' ')}
