@@ -2,9 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect, useRef, useState } from 'react';
-
-import type { KeyboardEvent } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
@@ -16,9 +14,6 @@ import { cn } from '@/lib/utils';
 const STEP_COUNT = HOW_IT_WORKS_STEPS.length;
 const AUTO_ADVANCE_MS = 6000;
 
-const panelId = (index: number) => `how-it-works-panel-${index}`;
-const tabId = (index: number) => `how-it-works-tab-${index}`;
-
 export interface HowItWorksProps {
   /** Cycle through the steps on a timer until the visitor interacts. */
   autoAdvance?: boolean;
@@ -28,23 +23,6 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
   const [active, setActive] = useState(0);
   // Any manual selection cancels auto-advance for the rest of the session.
   const [interacted, setInteracted] = useState(false);
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  // The mobile pager is fixed to the viewport, so it only belongs on screen
-  // while this section is — not over the hero above or the footer below.
-  const sectionRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
-      // Only once the section fills the lower part of the screen, so the
-      // pager doesn't appear over the hero's last few pixels.
-      rootMargin: '0px 0px -40% 0px',
-    });
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
 
   const select = useCallback((index: number) => {
     setInteracted(true);
@@ -66,163 +44,141 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
 
   const swipeHandlers = useSwipe(next, previous);
 
-  /** Arrow-key navigation, per the WAI-ARIA tabs pattern. */
-  const onTabKeyDown = (event: KeyboardEvent) => {
-    const delta =
-      event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
-    if (delta === 0) return;
-
-    event.preventDefault();
-    const target = (((active + delta) % STEP_COUNT) + STEP_COUNT) % STEP_COUNT;
-    select(target);
-    tabRefs.current[target]?.focus();
-  };
-
-  // One step at a time on mobile; all three columns from md up.
-  const onlyActiveOnMobile = (index: number) =>
-    index === active ? undefined : 'max-md:hidden';
-
   return (
-    <section ref={sectionRef} className="bg-background text-foreground" id="how">
+    <section
+      className="bg-background text-foreground"
+      id="how"
+      aria-roledescription="carousel"
+      aria-labelledby="how-it-works-heading"
+    >
       {/* Swipes (touch, or sideways on a trackpad) anywhere in the section
-          move the highlight to the next or previous step; on desktop all
-          three stay where they are. `touch-pan-y` keeps vertical scrolling
-          native. */}
+          move to the next or previous step. `touch-pan-y` keeps vertical
+          scrolling native. The phone and its pager sit above the steps on
+          mobile, beside them from md up. */}
       <div
-        className="mx-auto max-w-marketing touch-pan-y px-6 pt-16 pb-32 md:px-10 md:pt-24 md:pb-24"
+        className="mx-auto max-w-marketing touch-pan-y px-6 py-16 md:grid md:grid-cols-2 md:items-center md:gap-16 md:px-10 md:py-24"
         {...swipeHandlers}
       >
-        <div className="mb-12 grid grid-cols-1 items-end justify-items-center gap-6 md:mb-24 md:grid-cols-3">
-          {HOW_IT_WORKS_STEPS.map((step, index) => (
-            <button
-              key={step.ordinal}
-              className={cn('flex items-end justify-center', onlyActiveOnMobile(index))}
-              onClick={() => select(index)}
-              aria-label={`Show step ${index + 1}`}
-              aria-controls={panelId(index)}
-            >
-              <Image
-                className={cn(
-                  'h-96 w-auto max-w-full object-contain transition-opacity duration-base ease-out',
-                  index === active ? 'opacity-100' : 'opacity-40',
-                )}
-                src={step.image}
-                alt={step.imageAlt}
-                sizes="(max-width: 768px) 90vw, 33vw"
-              />
-            </button>
-          ))}
+        <div className="mb-12 flex flex-col items-center gap-6 md:mb-0">
+          <PhonePreview active={active} />
+          <Pager active={active} onPrevious={previous} onNext={next} />
         </div>
 
-        <p className="mb-8 text-label text-muted-foreground">How it works</p>
+        <div className="md:max-w-md">
+          <h2 id="how-it-works-heading" className="mb-8 text-label text-muted-foreground">
+            How it works
+          </h2>
+          <span className="mb-5 block h-0.5 bg-foreground" aria-hidden="true" />
 
-        <div
-          className="grid grid-cols-1 gap-10 border-t border-border md:grid-cols-3"
-          role="tablist"
-          aria-label="How it works"
-        >
-          {HOW_IT_WORKS_STEPS.map((step, index) => (
-            <button
-              key={step.ordinal}
-              ref={(node) => {
-                tabRefs.current[index] = node;
-              }}
-              className={cn('flex flex-col pt-0 text-left', onlyActiveOnMobile(index))}
-              role="tab"
-              id={tabId(index)}
-              aria-selected={index === active}
-              aria-controls={panelId(index)}
-              tabIndex={index === active ? 0 : -1}
-              onClick={() => select(index)}
-              onKeyDown={onTabKeyDown}
-            >
-              <span
-                className={cn(
-                  '-mt-px mb-5 h-0.5 bg-foreground transition-opacity duration-base ease-out',
-                  index === active ? 'opacity-100' : 'opacity-0',
-                )}
-              />
-              <span className="mb-1 text-caption text-muted-foreground">{step.ordinal}</span>
-              <span
-                className={cn(
-                  'text-title transition-colors duration-base ease-out',
-                  index === active ? 'text-foreground' : 'text-subtle-foreground',
-                )}
-              >
-                {step.title}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-6 grid grid-cols-1 items-start gap-10 md:grid-cols-3">
-          {HOW_IT_WORKS_STEPS.map((step, index) => (
-            <div
-              key={step.ordinal}
-              className={onlyActiveOnMobile(index)}
-              role="tabpanel"
-              id={panelId(index)}
-              aria-labelledby={tabId(index)}
-              // Deliberately not `hidden`: on desktop the inactive cell must
-              // keep its grid column so the three columns stay aligned with
-              // the tabs above. The inner body is display:none instead,
-              // which also takes it out of the accessibility tree.
-            >
+          {/* Every step sits in the same grid cell, so the column is as tall
+              as the longest one and doesn't jump as the copy changes. The
+              inactive ones are `invisible`, which also takes them out of the
+              tab order and the accessibility tree. */}
+          <div className="grid" aria-live={autoAdvance && !interacted ? 'off' : 'polite'}>
+            {HOW_IT_WORKS_STEPS.map((step, index) => (
               <div
+                key={step.ordinal}
                 className={cn(
-                  'flex-col items-start gap-6',
-                  index === active ? 'flex animate-fade-in' : 'hidden',
+                  'col-start-1 row-start-1 flex flex-col items-start',
+                  index === active ? 'animate-fade-in' : 'invisible',
                 )}
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${index + 1} of ${STEP_COUNT}`}
               >
-                <p className="text-body text-muted-foreground text-pretty">{step.body}</p>
+                <span className="mb-1 text-caption text-muted-foreground">{step.ordinal}</span>
+                <h3 className="text-title">{step.title}</h3>
+                <p className="mt-6 text-body text-muted-foreground text-pretty">{step.body}</p>
                 {step.ctaHref ? (
-                  <Button asChild variant="secondary">
+                  <Button asChild variant="secondary" className="mt-6">
                     <Link href={step.ctaHref}>{step.cta}</Link>
                   </Button>
                 ) : (
-                  <Button variant="secondary">{step.cta}</Button>
+                  <Button variant="secondary" className="mt-6">
+                    {step.cta}
+                  </Button>
                 )}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-
-      <div
-        className={cn(
-          'pointer-events-none fixed inset-x-0 bottom-5 z-30 flex justify-center gap-3 transition-opacity duration-base ease-out md:hidden',
-          inView ? 'opacity-100' : 'opacity-0',
-        )}
-        // Out of the tab order and the a11y tree while it's invisible, as
-        // the site header does.
-        aria-hidden={!inView}
-        inert={!inView}
-      >
-        <Button
-          size="icon"
-          variant="secondary"
-          className="pointer-events-auto"
-          onClick={previous}
-          aria-label="Previous step"
-        >
-          <ArrowLeft strokeWidth={1.5} />
-        </Button>
-        <span
-          className="flex items-center rounded-full bg-surface px-5 text-label text-foreground"
-          aria-hidden="true"
-        >
-          {active + 1} / {STEP_COUNT}
-        </span>
-        <Button
-          size="icon"
-          variant="secondary"
-          className="pointer-events-auto"
-          onClick={next}
-          aria-label="Next step"
-        >
-          <ArrowRight strokeWidth={1.5} />
-        </Button>
-      </div>
     </section>
+  );
+}
+
+/**
+ * A front-facing phone showing the active step's screen. The frame is drawn
+ * here rather than baked into the artwork, so each step only supplies what's
+ * on the screen.
+ */
+function PhonePreview({ active }: { active: number }) {
+  return (
+    <div className="relative aspect-9/19 w-40 overflow-hidden rounded-xl border-4 border-foreground bg-surface md:w-64 md:rounded-2xl">
+      {HOW_IT_WORKS_STEPS.map((step, index) => {
+        const Placeholder = step.placeholderIcon;
+        return (
+          <div
+            key={step.ordinal}
+            className={cn(
+              'absolute inset-0 transition-opacity duration-base ease-out',
+              index === active ? 'opacity-100' : 'opacity-0',
+            )}
+            aria-hidden={index !== active}
+          >
+            {step.screen ? (
+              <Image
+                className="object-cover"
+                src={step.screen}
+                alt={step.screenAlt}
+                fill
+                sizes="(max-width: 768px) 10rem, 16rem"
+              />
+            ) : (
+              <div
+                className="flex h-full flex-col items-center justify-center gap-4 p-6 text-center text-muted-foreground"
+                role="img"
+                aria-label={step.screenAlt}
+              >
+                <Placeholder className="size-12" strokeWidth={1.5} />
+                <span className="text-label">{step.title}</span>
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {/* The Dynamic Island. */}
+      <span
+        className="absolute inset-x-0 top-2 mx-auto h-4 w-12 rounded-full bg-foreground md:top-3 md:h-6 md:w-20"
+        aria-hidden="true"
+      />
+    </div>
+  );
+}
+
+function Pager({
+  active,
+  onPrevious,
+  onNext,
+}: {
+  active: number;
+  onPrevious: () => void;
+  onNext: () => void;
+}) {
+  return (
+    <div className="flex justify-center gap-3">
+      <Button size="icon" variant="secondary" onClick={onPrevious} aria-label="Previous step">
+        <ArrowLeft strokeWidth={1.5} />
+      </Button>
+      <span
+        className="flex items-center rounded-full bg-surface px-5 text-label text-foreground"
+        aria-hidden="true"
+      >
+        {active + 1} / {STEP_COUNT}
+      </span>
+      <Button size="icon" variant="secondary" onClick={onNext} aria-label="Next step">
+        <ArrowRight strokeWidth={1.5} />
+      </Button>
+    </div>
   );
 }
