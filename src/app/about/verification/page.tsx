@@ -56,7 +56,8 @@ export default function VerificationPage() {
                 <a href={FACE_ID_URL} target="_blank" rel="noreferrer noopener">
                   Apple&rsquo;s Face ID
                 </a>
-                , we check that you are a person using a physical phone.
+                , we check that a real person approves every photo at the moment
+                it&rsquo;s taken.
               </li>
               <li>
                 Using{' '}
@@ -123,29 +124,46 @@ export default function VerificationPage() {
           Proving you&rsquo;re a real person with a real camera.
         </h2>
         <ol>
-          <li>You snap a photo in our app.</li>
           <li>
-            Your phone&rsquo;s camera quietly signs the photo as it&rsquo;s
-            taken — think of it as an invisible watermark baked in at the moment
-            of capture.
+            You snap a photo in our app. Photos can&rsquo;t be imported — they
+            have to be taken here.
           </li>
-          <li>That signature travels with the photo.</li>
           <li>
-            We check the signature, and generate your shareable proof link.
+            You approve it with{' '}
+            <a href={FACE_ID_URL} target="_blank" rel="noreferrer noopener">
+              Face ID
+            </a>
+            , which confirms a real person is holding the phone at the moment
+            the photo is taken.
           </li>
+          <li>
+            Your phone proves the request came from our real, unmodified app on
+            a real iPhone, using Apple&rsquo;s{' '}
+            <a href={APP_ATTEST_URL} target="_blank" rel="noreferrer noopener">
+              app attestation
+            </a>
+            .
+          </li>
+          <li>
+            We sign the photo exactly as it was shot, recording that a camera
+            captured it. Then we add the human internet mark and sign it again,
+            so anyone can see the one change we made.
+          </li>
+          <li>We generate your shareable proof link.</li>
         </ol>
         <p>
-          This is possible because the camera and the photo get
-          cryptographically bound together using content credentials, an open
-          standard called C2PA. If you want to go down the rabbit hole:{' '}
+          These signatures are{' '}
           <a
             href={CONTENT_AUTHENTICITY_URL}
             target="_blank"
             rel="noreferrer noopener"
           >
-            Content Authenticity Initiative
+            content credentials
           </a>
-          .
+          , an open standard for recording where a photo came from. They&rsquo;re
+          saved inside the photo file, but most social platforms strip them out
+          when you upload. That&rsquo;s why the link is the proof: it always
+          points back to the copy we verified.
         </p>
 
         <h2 id={VERIFICATION_SECTIONS.identity}>Proving who you are.</h2>
