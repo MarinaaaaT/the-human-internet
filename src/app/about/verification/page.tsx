@@ -135,16 +135,16 @@ export default function VerificationPage() {
             have to be taken here.
           </li>
           <li>
-            Your phone proves the request came from our real, unmodified app on
-            a real iPhone, using Apple&rsquo;s{' '}
+            Your phone proves the photo came from our real, unmodified app on a
+            real iPhone, using Apple&rsquo;s{' '}
             <a href={APP_ATTEST_URL} target="_blank" rel="noreferrer noopener">
               app attestation
             </a>
             .
           </li>
           <li>
-            We sign the photo exactly as it was shot, recording that a camera
-            captured it. Then we add the human internet mark and sign it again,
+            We sign off on the original photo, recording that a camera captured
+            it. Then we add the human internet mark and sign it a second time,
             so anyone can see the one change we made.
           </li>
           <li>We generate your shareable proof link.</li>
