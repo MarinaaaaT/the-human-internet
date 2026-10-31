@@ -99,7 +99,7 @@ src/
     icons/               Inline SVG icons (brand logos lucide doesn't have)
   content/
     site.ts              Site-wide constants: nav links, App Store URL
-    steps.ts             Copy + images for the "how it works" steps
+    steps.ts             Copy + phone screens for the "how it works" steps
   hooks/                 useScrolledPast, useSwipe
   lib/
     photos/              Verification-photo lookup + the Public-only privacy
@@ -182,7 +182,7 @@ Several links on the homepage are intentional placeholders, pending their own
 marketing pages. They're centralised so wiring them up is a one-line change:
 
 - App Store link and the `Join` nav item → `src/content/site.ts`
-- The three "how it works" step buttons → add an `href` to the relevant entry in
+- The last "how it works" step button → add a `ctaHref` to its entry in
   `src/content/steps.ts`
 
 ## History

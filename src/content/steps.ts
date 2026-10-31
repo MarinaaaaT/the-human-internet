@@ -1,9 +1,8 @@
-import stepIdentity from '@/../public/images/step-1-identity.png';
-import stepCapture from '@/../public/images/step-2-capture.png';
-import stepShare from '@/../public/images/step-3-share.png';
+import { Camera, Link2, UserRound } from 'lucide-react';
 
-import { SECTION_LINKS } from '@/content/site';
+import { ROUTES, SECTION_LINKS } from '@/content/site';
 
+import type { LucideIcon } from 'lucide-react';
 import type { StaticImageData } from 'next/image';
 
 export interface HowItWorksStep {
@@ -18,8 +17,14 @@ export interface HowItWorksStep {
    * then renders inert rather than linking nowhere.
    */
   ctaHref?: string;
-  image: StaticImageData;
-  imageAlt: string;
+  /**
+   * What the phone shows for this step: a screenshot of the app, cropped to
+   * the screen (no frame — the section draws the phone around it). Omit
+   * while there isn't one yet; the phone then shows `placeholderIcon`.
+   */
+  screen?: StaticImageData;
+  screenAlt: string;
+  placeholderIcon: LucideIcon;
 }
 
 /**
@@ -29,29 +34,29 @@ export interface HowItWorksStep {
 export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
   {
     ordinal: '01',
-    title: 'Verify your identity (optional)',
-    body: 'Confirm that you’re a real person through a secure identity verification process.',
+    title: 'Prove you’re human',
+    body: 'You’re not a bot. Prove you’re real and optionally prove who you are.',
     cta: 'What do I need to do?',
-    ctaHref: SECTION_LINKS.identity,
-    image: stepIdentity,
-    imageAlt: 'Identity verification screen',
+    ctaHref: SECTION_LINKS.humanity,
+    screenAlt: 'Human verification screen',
+    placeholderIcon: UserRound,
   },
   {
     ordinal: '02',
-    title: 'Take human photos',
-    body: 'Capture a photo in the app. Behind the scenes, we verify that it was taken by a real person using a real camera, then generate a link you can use as proof.',
-    cta: 'What makes it human?',
-    ctaHref: SECTION_LINKS.humanity,
-    image: stepCapture,
-    imageAlt: 'Photo capture screen',
+    title: 'Take real photos',
+    body: 'Take photos in our app. We’ll handle verifying them behind the scenes.',
+    cta: 'How do you do it?',
+    ctaHref: ROUTES.verification,
+    screenAlt: 'Photo capture screen',
+    placeholderIcon: Camera,
   },
   {
     ordinal: '03',
-    title: 'Share verified photos',
-    body: 'Copy the verification link or share the photo directly to your favorite social platforms so others can see that it came from a real human.',
+    title: 'Share photos with proof',
+    body: 'You put work into your photos. Show it by sharing a human link alongside your photos.',
     // TODO: point at the example verification page once it exists.
     cta: 'See what it looks like',
-    image: stepShare,
-    imageAlt: 'Share and verified link screen',
+    screenAlt: 'Share and verified link screen',
+    placeholderIcon: Link2,
   },
 ];
