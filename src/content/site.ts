@@ -57,3 +57,7 @@ export const STRIPE_PRIVACY_URL = 'https://stripe.com/privacy';
 export const STRIPE_PRIVACY_EMAIL = 'privacy@stripe.com';
 
 export const CONTENT_AUTHENTICITY_URL = 'https://contentauthenticity.org/';
+export const APP_ATTEST_URL =
+  'https://developer.apple.com/documentation/devicecheck/establishing-your-app-s-integrity';
+export const FACE_ID_URL =
+  'https://support.apple.com/guide/security/biometric-security-sec067eb0c9e/web';
