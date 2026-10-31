@@ -28,26 +28,51 @@ export default function VerificationPage() {
     >
       <Prose>
         <p>
-          Verification is how we prove a real person took a real photo. When you
-          post, you get a link you can share alongside your photo as proof that
-          it came from a human with a camera — not from a prompt.
+          Our verification is how we prove a real person took a real photo.
+          When you post, you get a link you can share alongside your photo as
+          proof.
         </p>
-        <p>There are two things we check, and they&rsquo;re different:</p>
+        <p>There are two things we check for separately:</p>
         <ul>
           <li>
             <strong>
               <Link href={SECTION_LINKS.humanity}>
-                Did your camera really take this?
+                Are you a real person with a real camera?
               </Link>
             </strong>{' '}
-            We confirm the photo came out of the physical camera on your phone.
+            <em>(required)</em>
+            <ul>
+              <li>
+                Using app attestation, we check you are running a real version
+                of our app.
+              </li>
+              <li>
+                Using Sign in with Apple&rsquo;s biometrics (Face ID), we check
+                that you are a person using a physical phone.
+              </li>
+              <li>
+                Using C2PA, we check the photo came from the camera on your
+                phone.
+              </li>
+            </ul>
           </li>
           <li>
             <strong>
-              <Link href={SECTION_LINKS.identity}>Are you a real person?</Link>
+              <Link href={SECTION_LINKS.identity}>Are you a unique person?</Link>
             </strong>{' '}
-            We confirm you&rsquo;re a unique human, not a bot farm running fifty
-            accounts. This one is optional.
+            <em>(optional)</em>
+            <ul>
+              <li>
+                Using Stripe&rsquo;s identity verification product, we confirm
+                you&rsquo;re a unique human by validating your ID documents and
+                matching your face against your ID in real time.
+              </li>
+              <li>
+                This is 100% optional. However, without it we will not allow you
+                to share profile information such as social media handles, your
+                full name, or other identifying information.
+              </li>
+            </ul>
           </li>
         </ul>
 
@@ -55,12 +80,13 @@ export default function VerificationPage() {
         <p>
           Once a photo is verified, we generate a unique link for that photo.
           You share it wherever you post — in the caption, in your bio, in the
-          comments. Anyone who clicks it sees confirmation that a verified human
-          took that photo with a real camera.
+          comments. Your audience doesn&rsquo;t need our app. They don&rsquo;t
+          need an account. They just click.
         </p>
         <p>
-          Your audience doesn&rsquo;t need our app. They don&rsquo;t need an
-          account. They just click.
+          Anyone who clicks it sees confirmation that a real human took the
+          photo. If you are identity verified, we will state that alongside any
+          personal information you choose to share.
         </p>
 
         <h2>What we can&rsquo;t promise.</h2>
@@ -79,7 +105,7 @@ export default function VerificationPage() {
         </Callout>
 
         <h2 id={VERIFICATION_SECTIONS.humanity}>
-          Proving a human took the photo.
+          Proving you&rsquo;re a real person with a real camera.
         </h2>
         <ol>
           <li>You snap a photo in our app.</li>
@@ -107,19 +133,18 @@ export default function VerificationPage() {
           .
         </p>
 
-        <h2 id={VERIFICATION_SECTIONS.identity}>
-          Proving you&rsquo;re a real person (optional).
-        </h2>
+        <h2 id={VERIFICATION_SECTIONS.identity}>Proving who you are.</h2>
         <Callout>
           <p>
-            Identity verification is completely optional. You can capture and
-            share verified photos without it.
+            Identity verification is 100% optional. You can capture and share
+            photos without it. However, you are required to verify your
+            identity to claim legal ownership over your content <em>or</em> to
+            include personal information such as your name, birthday, or social
+            media alongside it.
           </p>
           <p>
-            If you&rsquo;d ever like to use the human internet to make claims
-            about the ownership of your content, that&rsquo;s when you&rsquo;ll
-            need to verify your identity. You can do it when you register, or
-            any time afterwards from Settings.
+            You can do it when you register, or any time afterwards from
+            Settings.
           </p>
         </Callout>
         <ol>
@@ -128,39 +153,42 @@ export default function VerificationPage() {
           <li>You take a selfie.</li>
         </ol>
         <p>
-          The selfie is what makes the ID meaningful. Our identity provider matches your face against the photo
-          on the document, which confirms a live person is actually holding that ID — rather than someone holding up a
-          photo of somebody else&rsquo;s license.
+          The selfie is what makes the ID meaningful. Our identity provider
+          matches your face against the photo on the document, which confirms a
+          live person is actually holding that ID — rather than someone holding
+          up a photo of somebody else&rsquo;s license.
         </p>
         <p>
-          That&rsquo;s the whole check. We never ask for a Social Security
-          number, and we never ask our identity provider to look one up.
+          That&rsquo;s the whole check. It&rsquo;s all answering one question:
+          who is the real person behind this account?
         </p>
         <p>
-          It&rsquo;s all answering one question: is there one real person behind
-          this account?
+          Please note we don&rsquo;t allow you to have more than one
+          identity-verified account. If there is another account previously
+          registered as you, we will reach out and ask you to close one.
         </p>
 
-        <h2>Your privacy.</h2>
+        <h2 id={VERIFICATION_SECTIONS.privacy}>Your privacy.</h2>
         <p>
-          We ask for identity information so we can confirm you&rsquo;re a
-          unique human. That&rsquo;s it.
+          While we optionally ask for identity information so we can confirm
+          you&rsquo;re a unique human, we don&rsquo;t store any of your
+          documents. We only send them to our identity provider to run the
+          check. The documents themselves are never posted, never attached to
+          your photos, and never shown to anyone on the human internet.
         </p>
         <p>
-          Your ID photo and selfie go to our
-          identity provider to run the check. They&rsquo;re never posted, never
-          attached to your photos, and never shown to anyone on the human
-          internet.
-        </p>
-        <p>
-          We will never share your identity information without your permission.
-          It isn&rsquo;t shown on your profile, it isn&rsquo;t attached to your
-          photos, and the people clicking your proof link don&rsquo;t see it.
-          They only see that a verified human took the photo.
+          We only share photos or identity information such as your name or
+          birthday with your permission. Sharing identity information is 100%
+          optional, and if you choose not to share it, it will not take away
+          from your verification status.
         </p>
         <p>
           One thing worth knowing: if you sell or hand off your account, whoever
           gets it may gain access to your information. So don&rsquo;t.
+        </p>
+        <p>
+          For more in-depth information, please review our{' '}
+          <Link href={ROUTES.privacyPolicy}>privacy policy</Link>.
         </p>
 
         <h2>Frequently asked questions.</h2>
@@ -205,7 +233,7 @@ export default function VerificationPage() {
           <p>
             Yes — if you abuse duplicate accounts, resell accounts, steal
             others&rsquo; content, or obviously photograph AI-generated content,
-            we&rsquo;ll remove you from the human internet.
+            we&rsquo;ll remove you from the human network.
           </p>
         </Faq>
       </Prose>

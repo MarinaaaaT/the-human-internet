@@ -82,7 +82,8 @@ src/
   app/
     layout.tsx           Root layout — fonts, global CSS, default metadata
     page.tsx             Homepage; composes the marketing sections
-    about/               /about and /about/verification content pages
+    about/               /about, /about/verification and /about/privacy-policy
+                         content pages
     [photoId]/           Signed-out verification page (see the note up top)
       page.tsx           The page itself
       opengraph-image.tsx  The card a shared link unfurls into
