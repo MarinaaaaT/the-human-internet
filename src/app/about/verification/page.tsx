@@ -56,8 +56,7 @@ export default function VerificationPage() {
                 <a href={FACE_ID_URL} target="_blank" rel="noreferrer noopener">
                   Apple&rsquo;s Face ID
                 </a>
-                , we check that a real person approves every photo at the moment
-                it&rsquo;s taken.
+                , we check that a real person is logging in.
               </li>
               <li>
                 Using{' '}
@@ -125,16 +124,15 @@ export default function VerificationPage() {
         </h2>
         <ol>
           <li>
-            You snap a photo in our app. Photos can&rsquo;t be imported — they
-            have to be taken here.
-          </li>
-          <li>
-            You approve it with{' '}
+            You sign in with{' '}
             <a href={FACE_ID_URL} target="_blank" rel="noreferrer noopener">
               Face ID
             </a>
-            , which confirms a real person is holding the phone at the moment
-            the photo is taken.
+            , which shows a real person is logging in.
+          </li>
+          <li>
+            You snap a photo in our app. Photos can&rsquo;t be imported — they
+            have to be taken here.
           </li>
           <li>
             Your phone proves the request came from our real, unmodified app on
