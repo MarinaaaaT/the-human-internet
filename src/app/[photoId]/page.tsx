@@ -16,6 +16,8 @@ import {
   signedPhotoUrlIfPublic,
 } from '@/lib/photos/verificationPhoto';
 
+import { ReportPhoto } from './ReportPhoto';
+
 // Signed URLs are minted fresh per request — this route can't be statically
 // generated, since the response depends on live DB state per photo id.
 export const dynamic = 'force-dynamic';
@@ -192,6 +194,10 @@ export default async function VerificationPage({ params }: PageProps) {
                   </ul>
                 </section>
               )}
+
+              {/* Only under a photo a visitor can see: a Humans Only page
+                  shows nothing to report. */}
+              <ReportPhoto photoId={photoId} />
             </>
           ) : (
             <div className="flex flex-col items-center gap-2 rounded-lg bg-surface px-6 py-8 text-center">

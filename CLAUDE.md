@@ -94,6 +94,10 @@ gate on the shared `signedPhotoUrlIfPublic` in `src/lib/photos/` rather than
 reimplementing the check, because a card is cached by every platform it is
 pasted into and a `Humans Only` leak there is far harder to walk back.
 
+## Reporting a photo
+
+Under a public photo, **Report this photo** (`src/app/[photoId]/ReportPhoto.tsx`, a dialog) posts `{ reason }` to `/[photoId]/report` (`report/route.ts`), which calls the backend's `report_photo(p_lookup, p_reason)` with the anon key. The function does the gating — Public owners only, 20 anonymous reports per photo per day — and answers the same whether or not it wrote anything, so the route does too (204). Not shown on a Humans Only page, which shows nothing to report. The reasons live in `src/lib/photos/reportReasons.ts` and must stay inside `photo_reports.reason`'s CHECK constraint; the app offers the same six with the same copy (`PhotoReportReason`, `ReportPhotoSheet`). Reports are reviewed by hand in Supabase.
+
 ## Design system
 
 The look is the shared design system (the kit), not anything local to this
