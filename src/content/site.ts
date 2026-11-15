@@ -49,7 +49,7 @@ export const NAV_LINKS: { label: string; href: string }[] = [
  * (the last "how it works" step). A path, not the full URL, so it resolves on
  * preview deployments too — it's the same `/[photoId]` route either way.
  */
-export const EXAMPLE_VERIFICATION_PATH = '/FzHYzuDD';
+export const EXAMPLE_VERIFICATION_PATH = '/TVyPwW7Q';
 
 /** Anchor for the "how it works" section, linked from the hero copy. */
 export const HOW_IT_WORKS_ANCHOR = '#how';
