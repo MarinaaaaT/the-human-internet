@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { RefObject } from 'react';
 
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
@@ -109,15 +110,35 @@ export function HowItWorks({ autoAdvance = false }: HowItWorksProps) {
 }
 
 /**
+ * What a clip's beat clock says should be showing at this moment of a pass:
+ * the face bracket, the proof card, the spiral on it. A bit set, so React
+ * can skip the many frames where nothing changes.
+ */
+const BEAT_BRACKETS = 1;
+const BEAT_CARD = 2;
+const BEAT_MARK = 4;
+
+/**
  * A front-facing phone showing the active step's screen. The frame is drawn
  * here rather than baked into the artwork, so each step only supplies what's
  * on the screen. A step's `proof` card sits outside the frame, over its
  * lower-left corner, so the wrapper doesn't clip.
  */
 function PhonePreview({ active }: { active: number }) {
+  // Nothing moves until the phone has been fully on screen once: the clips
+  // sit on their first frame and the proof card stays hidden, so the
+  // sequence starts where the visitor can see it from the top.
+  const phone = useRef<HTMLDivElement>(null);
+  const started = useSeenInFull(phone);
+  // The proof card follows the clock of its own step's clip.
+  const [proofBeats, setProofBeats] = useState(0);
+
   return (
     <div className="relative">
-      <div className="relative aspect-9/19 w-40 overflow-hidden rounded-xl border-4 border-foreground bg-surface md:w-64 md:rounded-2xl">
+      <div
+        ref={phone}
+        className="relative aspect-9/19 w-40 overflow-hidden rounded-xl border-4 border-foreground bg-surface md:w-64 md:rounded-2xl"
+      >
         {HOW_IT_WORKS_STEPS.map((step, index) => {
           const Placeholder = step.placeholderIcon;
           return (
@@ -133,7 +154,8 @@ function PhonePreview({ active }: { active: number }) {
                 <ScreenVideo
                   {...step.screenVideo}
                   label={step.screenAlt}
-                  playing={index === active}
+                  playing={started && index === active}
+                  onBeats={step.proof ? setProofBeats : undefined}
                 />
               ) : step.screen ? (
                 <Image
@@ -163,11 +185,18 @@ function PhonePreview({ active }: { active: number }) {
         />
       </div>
 
-      {HOW_IT_WORKS_STEPS.map((step, index) =>
-        step.proof ? (
-          <StepProof key={step.ordinal} {...step.proof} shown={index === active} />
-        ) : null,
-      )}
+      {HOW_IT_WORKS_STEPS.map((step, index) => {
+        if (!step.proof) return null;
+        const live = started && index === active;
+        return (
+          <StepProof
+            key={step.ordinal}
+            {...step.proof}
+            card={live && (proofBeats & BEAT_CARD) !== 0}
+            mark={live && (proofBeats & BEAT_MARK) !== 0}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -176,6 +205,18 @@ function PhonePreview({ active }: { active: number }) {
  * A looping, muted clip on the phone's screen. It plays only while its step
  * is showing, and never for a visitor who prefers reduced motion: they get
  * the poster, the clip's first frame.
+ *
+ * A clip with a face bracket or a proof card (`onBeats`) also keeps time
+ * for them, from its own clock, so they replay on every pass and stay in
+ * step with the picture:
+ *
+ * - the bracket from the top until it has faded out (one `duration-base`)
+ *   at two staggers;
+ * - the proof card from one stagger, the spiral from two;
+ * - both gone (faded by one `duration-base`) just before the pass ends.
+ *
+ * The timings are read from the tokens, not restated. With reduced motion
+ * nothing loops: the card and spiral simply show, and the bracket never does.
  */
 function ScreenVideo({
   src,
@@ -183,25 +224,26 @@ function ScreenVideo({
   faceFrame,
   label,
   playing,
+  onBeats,
 }: {
   src: string;
   poster: string;
   faceFrame?: string;
   label: string;
   playing: boolean;
+  onBeats?: (beats: number) => void;
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const reducedMotion = usePrefersReducedMotion();
-  // Whether the clip is in its opening stretch, where the face bracket
-  // shows. Driven by the clip's own clock, so it replays on every loop and
-  // stays in step with the picture.
-  const [inBracketWindow, setInBracketWindow] = useState(true);
+  const [clockBeats, setClockBeats] = useState(0);
+  const keepsTime = Boolean(faceFrame || onBeats);
+  const beats = !playing ? 0 : reducedMotion ? BEAT_CARD | BEAT_MARK : clockBeats;
 
   useEffect(() => {
     const element = video.current;
     if (!element) return;
     if (playing && !reducedMotion) {
-      // From the top each time the step comes back, so the bracket and the
+      // From the top each time the step comes back, so the beats and the
       // clip start together. Autoplay of a muted clip is allowed everywhere
       // we care about; if a browser refuses anyway, the poster stays up.
       element.currentTime = 0;
@@ -213,20 +255,30 @@ function ScreenVideo({
 
   useEffect(() => {
     const element = video.current;
-    if (!element || !faceFrame || !playing || reducedMotion) return;
-    // Shown from the top of each pass until it has faded out (one
-    // `duration-base`) by the time two staggers have passed — the beat the
-    // spiral arrives on the ID card. Read from the tokens, not restated.
+    if (!element || !keepsTime || !playing || reducedMotion) return;
     const style = getComputedStyle(document.documentElement);
     // Browsers may serialise these as seconds (`.8s`) rather than as
-    // written (`800ms`), so honour either unit.
-    const ms = (name: string) => {
+    // written (`800ms`), so honour either unit. Returned in seconds.
+    const seconds = (name: string) => {
       const value = style.getPropertyValue(name).trim();
       const number = parseFloat(value) || 0;
-      return value.endsWith('ms') ? number : number * 1000;
+      return value.endsWith('ms') ? number / 1000 : number;
     };
-    const hideAt = (2 * ms('--ds-duration-stagger') - ms('--ds-duration-base')) / 1000;
-    const update = () => setInBracketWindow(element.currentTime < hideAt);
+    const stagger = seconds('--ds-duration-stagger');
+    const base = seconds('--ds-duration-base');
+    const update = () => {
+      const time = element.currentTime;
+      // A tenth of a second of slack so the fade-out finishes before the
+      // loop even when the clock is only read a few times a second.
+      const passEnd = Number.isFinite(element.duration)
+        ? element.duration - base - 0.1
+        : Number.POSITIVE_INFINITY;
+      let next = 0;
+      if (faceFrame && time < 2 * stagger - base) next |= BEAT_BRACKETS;
+      if (time >= stagger && time < passEnd) next |= BEAT_CARD;
+      if (time >= 2 * stagger && time < passEnd) next |= BEAT_MARK;
+      setClockBeats(next);
+    };
     // Every frame for precision while the page is on screen; `timeupdate`
     // (a few times a second) as well, since frames stop in a background or
     // throttled tab while the clip can keep playing.
@@ -241,7 +293,11 @@ function ScreenVideo({
       cancelAnimationFrame(frame);
       element.removeEventListener('timeupdate', update);
     };
-  }, [faceFrame, playing, reducedMotion]);
+  }, [faceFrame, keepsTime, playing, reducedMotion]);
+
+  useEffect(() => {
+    onBeats?.(beats);
+  }, [onBeats, beats]);
 
   return (
     <div className="absolute inset-0" role="img" aria-label={label}>
@@ -257,10 +313,7 @@ function ScreenVideo({
         aria-hidden="true"
       />
       {faceFrame ? (
-        <FaceFrame
-          className={faceFrame}
-          visible={playing && !reducedMotion && inBracketWindow}
-        />
+        <FaceFrame className={faceFrame} visible={(beats & BEAT_BRACKETS) !== 0} />
       ) : null}
     </div>
   );
@@ -270,8 +323,8 @@ function ScreenVideo({
  * Corner brackets around the face, like a camera that has found one. On
  * each pass of the clip they fade in, hold, and fade out on the beat the
  * spiral appears on the ID card: checked, then verified. `ScreenVideo`
- * decides when from the clip's clock. Opacity only — no green "success"
- * state, since the palette has no green. Never shown with reduced motion.
+ * decides when. Opacity only — no green "success" state, since the palette
+ * has no green.
  */
 function FaceFrame({ className, visible }: { className: string; visible: boolean }) {
   return (
@@ -302,11 +355,9 @@ function Brackets() {
 
 /**
  * The card a step's screen is checked against, over the phone's lower-left
- * corner. Each time the step shows, the card fades in a beat after the
- * screen and the spiral a beat after that (`reveal-delay-*`); reduced
- * motion collapses both delays to nothing. The outer layer fades the whole
- * thing out when the step changes; the inner one is re-keyed so the
- * sequence replays every time the step comes back.
+ * corner, and the spiral on its corner. Each fades in slowly when its beat
+ * comes (`card`, `mark`) and out quickly when it goes, so both are gone
+ * before the clip loops and comes round to them again.
  *
  * The white border is the gap between the card and the phone behind it:
  * this is a picture of a physical card, not a UI card, and a shadow would
@@ -317,28 +368,27 @@ function StepProof({
   alt,
   width,
   height,
-  shown,
+  card,
+  mark,
 }: {
   src: string;
   alt: string;
   width: number;
   height: number;
-  shown: boolean;
+  card: boolean;
+  mark: boolean;
 }) {
   return (
     <div
       className={cn(
-        'absolute bottom-10 -left-8 w-20 transition-opacity duration-base ease-out md:bottom-16 md:-left-12 md:w-32',
-        shown ? 'opacity-100' : 'opacity-0',
+        'absolute bottom-10 -left-8 w-20 transition-opacity ease-out md:bottom-16 md:-left-12 md:w-32',
+        card ? 'opacity-100 duration-slow' : 'opacity-0 duration-base',
       )}
-      aria-hidden={!shown}
+      aria-hidden={!card}
     >
-      <div key={shown ? 'shown' : 'hidden'} className="relative">
+      <div className="relative">
         <Image
-          className={cn(
-            'block h-auto w-full rounded-sm border-2 border-background',
-            shown && 'animate-reveal reveal-delay-1',
-          )}
+          className="block h-auto w-full rounded-sm border-2 border-background"
           src={src}
           alt={alt}
           width={width}
@@ -348,11 +398,42 @@ function StepProof({
         <VerifiedMark
           variant="badge"
           label="Verified"
-          className={cn('absolute -top-4 -right-4', shown && 'animate-reveal reveal-delay-2')}
+          className={cn(
+            'absolute -top-4 -right-4 transition-opacity ease-out',
+            mark ? 'opacity-100 duration-slow' : 'opacity-0 duration-base',
+          )}
         />
       </div>
     </div>
   );
+}
+
+/**
+ * True from the first time the element is entirely on screen, and stays
+ * true. "Entirely" allows for a window too short to hold it: then filling
+ * nearly all of the viewport counts.
+ */
+function useSeenInFull(element: RefObject<HTMLElement | null>) {
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const target = element.current;
+    if (!target || seen) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const viewport = entry.rootBounds?.height ?? window.innerHeight;
+        const whole =
+          entry.intersectionRatio >= 0.99 || entry.intersectionRect.height >= viewport * 0.95;
+        if (entry.isIntersecting && whole) {
+          setSeen(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1] },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [element, seen]);
+  return seen;
 }
 
 function usePrefersReducedMotion() {
