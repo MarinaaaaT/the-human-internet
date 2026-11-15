@@ -1,6 +1,7 @@
+import { APP_PHOTO_DEEP_LINK_PREFIX } from '@/content/site';
 import { getSupabaseClient } from '@/lib/supabase/server';
 
-import { isPhotoIdShape } from './photoIdShape';
+import { isPhotoIdShape, isUuidShape } from './photoIdShape';
 
 /**
  * Lookup and privacy gate for the signed-out verification photo, shared by
@@ -21,6 +22,14 @@ import { isPhotoIdShape } from './photoIdShape';
 export const SIGNED_URL_TTL_SECONDS = 60;
 
 export interface VerificationPhoto {
+  /**
+   * `photos.id`, which the app's deep link needs — the URL usually holds
+   * only the short code. Ungated: it unlocks nothing the short code doesn't
+   * (the RPC answers the same for either, and Storage still needs the
+   * owner's id and a `Public` owner). Optional so a database whose RPC
+   * predates it still reads; `appDeepLink` then falls back to the URL.
+   */
+  id?: string | null;
   storage_path: string | null;
   username: string | null;
   captured_at: string;
@@ -63,6 +72,23 @@ export interface VerificationPhoto {
    * whose RPC predates it reads as not a demo.
    */
   is_demo?: boolean;
+}
+
+/**
+ * The app's link to this photo, `thehumaninternet://photo/{id}`
+ * (`VerifiedPhoto.deepLinkScheme`/`deepLinkHost` and `RootView.handle(url:)`
+ * in the app). The app accepts only the UUID, so a short-code URL needs the
+ * RPC's `id`. Null when neither gives one, and the page then shows no
+ * "Open in app" rather than a link the app would ignore.
+ */
+export function appDeepLink(
+  photo: VerificationPhoto,
+  photoId: string,
+): string | null {
+  const id = photo.id ?? (isUuidShape(photoId) ? photoId : null);
+  return id && isUuidShape(id)
+    ? `${APP_PHOTO_DEEP_LINK_PREFIX}${id.toLowerCase()}`
+    : null;
 }
 
 /**

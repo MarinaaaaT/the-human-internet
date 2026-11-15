@@ -10,8 +10,8 @@ export function Hero() {
     // laptop; on a wider screen the height left under the headline sizes it,
     // and it centres with white space either side.
     //
-    // `id="download"` is where the nav's "Join" and the About page's "Get
-    // the app" land until there's an App Store link to send them to.
+    // `id="download"` predates the App Store link and is kept so any old
+    // `/#download` links still land on the hero.
     <section
       id="download"
       className="relative flex h-svh min-h-160 flex-col items-center overflow-hidden bg-background"

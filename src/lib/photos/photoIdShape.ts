@@ -10,6 +10,12 @@ const UUID_SHAPE =
 // app's `VerifiedPhoto.generateShortCode()`.
 const SHORT_CODE_SHAPE = /^[123456789A-HJ-NP-Za-km-z]{8}$/;
 
+/** A bare `photos.id` — the pre-short-code link format, and the only id the
+ *  app's `thehumaninternet://photo/{id}` deep link accepts. */
+export function isUuidShape(value: string): boolean {
+  return UUID_SHAPE.test(value);
+}
+
 export function isPhotoIdShape(value: string): boolean {
   return UUID_SHAPE.test(value) || SHORT_CODE_SHAPE.test(value);
 }
