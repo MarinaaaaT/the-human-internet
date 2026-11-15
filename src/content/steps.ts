@@ -23,6 +23,27 @@ export interface HowItWorksStep {
    * while there isn't one yet; the phone then shows `placeholderIcon`.
    */
   screen?: StaticImageData;
+  /**
+   * A looping, muted clip for the screen instead of `screen` (a path under
+   * `public/`). `poster` is its first frame: what shows before it plays,
+   * and all that shows to a visitor who prefers reduced motion.
+   */
+  screenVideo?: {
+    src: string;
+    poster: string;
+    /**
+     * Inset classes placing a corner bracket around the face, the way a
+     * camera marks what it has found. Fractions of the phone's screen, so
+     * they're tied to this clip's framing. Omit for no bracket.
+     */
+    faceFrame?: string;
+  };
+  /**
+   * A card that fades in over the phone's lower-left corner once the step
+   * is showing, followed by the verified spiral on its corner: the thing
+   * the screen is being checked against.
+   */
+  proof?: { src: string; alt: string; width: number; height: number };
   screenAlt: string;
   placeholderIcon: LucideIcon;
 }
@@ -38,7 +59,20 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
     body: 'You’re not a bot. Prove you’re real and optionally prove who you are.',
     cta: 'What do I need to do?',
     ctaHref: SECTION_LINKS.humanity,
-    screenAlt: 'Human verification screen',
+    screenVideo: {
+      src: '/images/how-it-works/selfie.mp4',
+      poster: '/images/how-it-works/selfie-poster.jpg',
+      faceFrame: 'inset-x-1/5 top-1/5 bottom-2/5',
+    },
+    // A sample licence, not a real document: made-up name, number and
+    // address around the same face as the selfie.
+    proof: {
+      src: '/images/how-it-works/sample-id.webp',
+      alt: 'A sample driver’s license with the same face',
+      width: 1582,
+      height: 994,
+    },
+    screenAlt: 'A selfie video of the person proving they’re human',
     placeholderIcon: UserRound,
   },
   {
@@ -47,7 +81,13 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
     body: 'Take photos in our app. We’ll handle verifying them behind the scenes.',
     cta: 'How do you do it?',
     ctaHref: ROUTES.verification,
-    screenAlt: 'Photo capture screen',
+    // A screen recording of the app at 4x: the camera, the shot, then the
+    // verified photo ready to share.
+    screenVideo: {
+      src: '/images/how-it-works/capture.mp4',
+      poster: '/images/how-it-works/capture-poster.jpg',
+    },
+    screenAlt: 'The app’s camera taking a photo of a cat, then showing it verified and ready to share',
     placeholderIcon: Camera,
   },
   {
@@ -56,7 +96,14 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
     body: 'You put work into your photos. Show it by sharing a human link alongside your photos.',
     cta: 'See what it looks like',
     ctaHref: EXAMPLE_VERIFICATION_PATH,
-    screenAlt: 'Share and verified link screen',
+    // A screen recording from the verified photo: shared to X with its
+    // link, then (from the profile on) the link opened to the verification
+    // page. 2x up to the side menu, which is cut out, then normal speed.
+    screenVideo: {
+      src: '/images/how-it-works/share.mp4',
+      poster: '/images/how-it-works/share-poster.jpg',
+    },
+    screenAlt: 'Sharing the verified photo to X with its link, then opening the link to its verification page',
     placeholderIcon: Link2,
   },
 ];
