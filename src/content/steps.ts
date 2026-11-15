@@ -81,8 +81,8 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
     body: 'Take photos in our app. We’ll handle verifying them behind the scenes.',
     cta: 'How do you do it?',
     ctaHref: ROUTES.verification,
-    // A screen recording of the app at 4x: the camera, the shot, then the
-    // verified photo ready to share.
+    // A screen recording of the app at normal speed: the camera, the shot,
+    // then the verified photo ready to share.
     screenVideo: {
       src: '/images/how-it-works/capture.mp4',
       poster: '/images/how-it-works/capture-poster.jpg',
