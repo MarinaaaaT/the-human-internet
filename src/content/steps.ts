@@ -1,6 +1,6 @@
 import { Camera, Link2, UserRound } from 'lucide-react';
 
-import { ROUTES, SECTION_LINKS } from '@/content/site';
+import { EXAMPLE_VERIFICATION_PATH, ROUTES, SECTION_LINKS } from '@/content/site';
 
 import type { LucideIcon } from 'lucide-react';
 import type { StaticImageData } from 'next/image';
@@ -54,8 +54,8 @@ export const HOW_IT_WORKS_STEPS: HowItWorksStep[] = [
     ordinal: '03',
     title: 'Share photos with proof',
     body: 'You put work into your photos. Show it by sharing a human link alongside your photos.',
-    // TODO: point at the example verification page once it exists.
     cta: 'See what it looks like',
+    ctaHref: EXAMPLE_VERIFICATION_PATH,
     screenAlt: 'Share and verified link screen',
     placeholderIcon: Link2,
   },

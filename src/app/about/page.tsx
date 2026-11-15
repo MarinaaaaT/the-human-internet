@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ContentPage } from '@/components/content/ContentPage';
 import { MaybeLink } from '@/components/content/MaybeLink';
 import { Prose } from '@/components/content/Prose';
-import { EXTERNAL_LINKS, ROUTES } from '@/content/site';
+import { APP_STORE_URL, EXTERNAL_LINKS, ROUTES } from '@/content/site';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -81,7 +81,7 @@ export default function AboutPage() {
         <ul>
           <li>
             <strong>
-              <Link href={`${ROUTES.home}#download`}>Get the app</Link>
+              <a href={APP_STORE_URL}>Get the app</a>
             </strong>{' '}
             — Download it, share a photo, and leave me any feedback.
           </li>

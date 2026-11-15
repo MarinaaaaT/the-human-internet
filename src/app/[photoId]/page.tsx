@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { APP_STORE_URL, ROUTES, SITE_NAME } from '@/content/site';
 import { parseSocialLinks } from '@/lib/photos/socialLinks';
 import {
+  appDeepLink,
   DEMO_DISCLAIMER,
   formatCapturedAt,
   getVerificationPhoto,
@@ -95,6 +96,7 @@ export default async function VerificationPage({ params }: PageProps) {
   const socialLinks = parseSocialLinks(photo.social_links);
 
   const showPhoto = photo.is_public && signedPhotoUrl;
+  const openInAppHref = appDeepLink(photo, photoId);
 
   return (
     <>
@@ -212,9 +214,11 @@ export default async function VerificationPage({ params }: PageProps) {
                 <Button asChild>
                   <a href={APP_STORE_URL}>Download app</a>
                 </Button>
-                <Button asChild variant="tertiary">
-                  <a href="#">Open in app</a>
-                </Button>
+                {openInAppHref && (
+                  <Button asChild variant="tertiary">
+                    <a href={openInAppHref}>Open in app</a>
+                  </Button>
+                )}
               </div>
             </div>
           )}

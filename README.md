@@ -71,7 +71,10 @@ The publishable key is deliberately not a secret. The security boundary for
 anonymous reads is server-side: `get_verification_photo()` is a `security definer`
 function that only ever answers about one photo you already hold the code for (so
 the key can't be used to enumerate photos), and it returns `storage_path`/`username`
-only when the owner's privacy is `Public`. Storage reads go through an `anon` RLS
+only when the owner's privacy is `Public`. It also returns the photo's `id`,
+ungated, because the Humans Only page's "Open in app" button links to the app's
+`thehumaninternet://photo/{id}`, which takes only the UUID, and most URLs carry
+only the short code. Storage reads go through an `anon` RLS
 policy on the `photos` bucket. See the app repo's `CLAUDE.md` → Database for the
 full policy set and the two silent traps found while building it.
 
@@ -175,15 +178,6 @@ public/images/           Hero and phone-mockup artwork
   `site.ts` holds `string | null`, and `MaybeLink` renders plain text for a
   `null`. Filling in a URL there promotes it to a real link with no other
   change — so add the entry rather than hard-coding a placeholder `#`.
-
-## Where the placeholder links go
-
-Several links on the homepage are intentional placeholders, pending their own
-marketing pages. They're centralised so wiring them up is a one-line change:
-
-- App Store link and the `Join` nav item → `src/content/site.ts`
-- The last "how it works" step button → add a `ctaHref` to its entry in
-  `src/content/steps.ts`
 
 ## History
 
